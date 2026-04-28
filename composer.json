@@ -1,0 +1,24 @@
+{
+    "name": "kosera/mitra",
+    "description": "Sistem Manajemen Mitra KOSERA",
+    "type": "project",
+    "require": {
+        "php": ">=7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        },
+        "files": [
+            "app/helpers.php"
+        ]
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "@php -r \"if (!is_dir('uploads')) mkdir('uploads', 0775, true); if (!is_dir('uploads/certificates')) mkdir('uploads/certificates', 0775, true); if (!is_dir('uploads/portfolio')) mkdir('uploads/portfolio', 0775, true);\""
+        ],
+        "post-update-cmd": [
+            "@php -r \"if (!is_dir('uploads')) mkdir('uploads', 0775, true); if (!is_dir('uploads/certificates')) mkdir('uploads/certificates', 0775, true); if (!is_dir('uploads/portfolio')) mkdir('uploads/portfolio', 0775, true);\""
+        ]
+    }
+}
