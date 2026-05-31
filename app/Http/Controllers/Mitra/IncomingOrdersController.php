@@ -3,40 +3,18 @@
 namespace App\Http\Controllers\Mitra;
 
 use App\Http\Controllers\Controller;
-use App\Models\Order;
+use App\Services\MitraService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class IncomingOrdersController extends Controller
 {
+    public function __construct(private MitraService $mitraService) {}
+
     public function index()
     {
         $userId = Auth::id() ?? 1;
-
-        // Fetch incoming orders (pending status) from database for logged-in mitra
-        $orders = Order::whereHas('service', function ($q) use ($userId) {
-            $q->where('user_id', $userId);
-        })
-        ->where('status', 'pending')
-        ->with(['service:id,nama_layanan', 'user:id,nama,phone,email'])
-        ->latest('created_at')
-        ->get()
-        ->map(function ($order) {
-            return [
-                'id' => $order->id,
-                'order_code' => $order->order_code,
-                'customer_name' => $order->customer_name,
-                'service_type' => $order->service->kategori ?? 'Umum',
-                'service_name' => $order->service->nama_layanan,
-                'address' => $order->alamat_lengkap,
-                'total_price' => $order->total_harga,
-                'order_date' => $order->created_at->format('Y-m-d'),
-                'status' => $order->status,
-                'phone' => $order->customer_phone,
-                'email' => $order->customer_email,
-                'notes' => $order->catatan_customer,
-            ];
-        });
+        $orders = collect($this->mitraService->getIncomingOrders($userId));
 
         // Filter out rejected orders from session
         $rejectedOrderIds = session('mitra.rejected_order_ids', []);
@@ -51,26 +29,18 @@ class IncomingOrdersController extends Controller
 
     public function updateStatus(Request $request)
     {
-        $orderId = $request->input('order_id');
+        $orderId = (int) $request->input('order_id');
         $action = $request->input('action');
-
-        $order = Order::find($orderId);
-        if (!$order) {
-            return redirect()->route('mitra.orders.incoming')
-                ->with('message', ['type' => 'error', 'text' => 'Pesanan tidak ditemukan.']);
-        }
-
-        // Verify ownership: order harus milik service dari mitra yang login
         $userId = Auth::id() ?? 1;
-        if ($order->service->user_id !== $userId) {
-            return redirect()->route('mitra.orders.incoming')
-                ->with('message', ['type' => 'error', 'text' => 'Anda tidak memiliki akses ke pesanan ini.']);
-        }
 
         if ($action === 'accept') {
-            $order->update(['status' => 'confirmed']);
+            $ok = $this->mitraService->updateIncomingOrderStatus($userId, $orderId, 'confirmed');
+            if (! $ok) {
+                return redirect()->route('mitra.orders.incoming')
+                    ->with('message', ['type' => 'error', 'text' => 'Pesanan tidak ditemukan atau akses ditolak.']);
+            }
             return redirect()->route('mitra.orders.incoming')
-                ->with('message', ['type' => 'success', 'text' => "Order #{$order->order_code} berhasil diterima dan status diubah menjadi Confirmed!"]);
+                ->with('message', ['type' => 'success', 'text' => 'Pesanan berhasil diterima dan status diubah menjadi Confirmed!']);
         } elseif ($action === 'reject') {
             $rejectedOrderIds = session('mitra.rejected_order_ids', []);
             if (!in_array($orderId, $rejectedOrderIds)) {
@@ -78,10 +48,9 @@ class IncomingOrdersController extends Controller
             }
             session(['mitra.rejected_order_ids' => $rejectedOrderIds]);
 
-            // Optionally: update order status to cancelled
-            $order->update(['status' => 'cancelled']);
+            $this->mitraService->updateIncomingOrderStatus($userId, $orderId, 'cancelled');
             return redirect()->route('mitra.orders.incoming')
-                ->with('message', ['type' => 'warning', 'text' => "Order #{$order->order_code} telah ditolak dan dihapus dari daftar Pesanan Masuk."]);
+                ->with('message', ['type' => 'warning', 'text' => 'Pesanan telah ditolak dan dihapus dari daftar Pesanan Masuk.']);
         }
 
         return redirect()->route('mitra.orders.incoming');

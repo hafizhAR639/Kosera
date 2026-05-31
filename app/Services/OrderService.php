@@ -24,6 +24,16 @@ class OrderService
         return $this->repository->getUserOrderDetail($userId, $orderId);
     }
 
+    public function getLatestOrderForUser(int $userId)
+    {
+        return $this->repository->getLatestOrderForUser($userId);
+    }
+
+    public function ensureServiceExists(int $serviceId)
+    {
+        return \App\Models\Service::findOrFail($serviceId);
+    }
+
     /**
      * Cancel a pending order
      */

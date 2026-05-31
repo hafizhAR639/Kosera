@@ -16,16 +16,16 @@
             <div class="-mt-12 flex flex-wrap items-end justify-between gap-6">
                 <div class="flex items-center gap-5">
                     <figure class="h-28 w-28 overflow-hidden rounded-2xl bg-white shadow">
-                        @if (!empty($profile['avatar']))
-                            <img src="{{ $profile['avatar'] }}" alt="Foto profil" class="h-full w-full object-cover">
+                        @if (!empty(data_get($profile, 'avatar')))
+                            <img src="{{ data_get($profile, 'avatar') }}" alt="Foto profil" class="h-full w-full object-cover">
                         @else
-                            <div class="flex h-full items-center justify-center text-4xl text-slate-400">{{ strtoupper(substr($profile['nama'], 0, 1)) }}</div>
+                            <div class="flex h-full items-center justify-center text-4xl text-slate-400">{{ strtoupper(substr(data_get($profile, 'nama', 'U'), 0, 1)) }}</div>
                         @endif
                     </figure>
                     <div>
-                        <h2 class="text-3xl font-semibold text-black">{{ $profile['nama'] }}</h2>
-                        <p class="text-lg text-[#7c838a]">{{ $profile['email'] }}</p>
-                        <p class="text-lg text-[#7c838a]">{{ $profile['phone'] ?? '-' }}</p>
+                        <h2 class="text-3xl font-semibold text-black">{{ data_get($profile, 'nama', '-') }}</h2>
+                        <p class="text-lg text-[#7c838a]">{{ data_get($profile, 'email', '-') }}</p>
+                        <p class="text-lg text-[#7c838a]">{{ data_get($profile, 'phone', '-') }}</p>
                     </div>
                 </div>
                 <a href="{{ route('mitra.profile.edit') }}" class="rounded-[10px] bg-[#006b9b] px-8 py-3 text-2xl font-bold text-white">Edit</a>
@@ -34,11 +34,11 @@
             <dl class="mt-8 grid gap-6 md:grid-cols-2">
                 <div>
                     <dt class="text-xl font-medium text-[#7c838a]">Kota</dt>
-                    <dd class="text-xl text-black">{{ $profile['location'] ?? '-' }}</dd>
+                    <dd class="text-xl text-black">{{ data_get($profile, 'location', '-') }}</dd>
                 </div>
                 <div>
                     <dt class="text-xl font-medium text-[#7c838a]">Status</dt>
-                    <dd class="text-xl text-black">{{ ucfirst($profile['status'] ?? 'active') }}</dd>
+                    <dd class="text-xl text-black">{{ ucfirst(data_get($profile, 'status', 'active')) }}</dd>
                 </div>
             </dl>
         </div>
@@ -46,7 +46,7 @@
 
     <article class="rounded-[30px] bg-white p-8 shadow-[7px_12px_43px_0_rgba(0,0,0,0.14)]">
         <h3 class="text-2xl font-semibold text-black">Deskripsi Diri</h3>
-        <p class="mt-3 text-lg text-[#555]">{{ $profile['bio'] ?? 'Belum ada deskripsi.' }}</p>
+        <p class="mt-3 text-lg text-[#555]">{{ data_get($profile, 'bio', 'Belum ada deskripsi.') }}</p>
     </article>
 </section>
 @endsection

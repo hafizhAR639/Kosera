@@ -3,110 +3,115 @@
 namespace App\Http\Controllers\Mitra;
 
 use App\Http\Controllers\Controller;
-use App\Models\Certificate;
+use App\Services\MitraService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class CertificateController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+    public function __construct(private MitraService $mitraService) {}
 
-    public function index()
+    public function index(Request $request)
     {
-        $certificates = Certificate::where('user_id', Auth::id())
-            ->orderBy('tanggal_terbit', 'desc')
-            ->get();
+        $userId = Auth::id() ?? 1;
+        $category = (string) $request->query('category', 'all');
+        $search = (string) $request->query('q', '');
+        $page = max(1, (int) $request->query('page', 1));
+        $limit = 20;
+        $offset = ($page - 1) * $limit;
 
-        return view('mitra.certificate.index', [
+        $certificates = $this->mitraService->getCertificates($userId, $category, $search, $limit, $offset);
+        $count = $this->mitraService->countCertificates($userId, $category, $search);
+        $totalPages = max(1, (int) ceil($count / $limit));
+
+        return view('mitra.certificates', [
             'title' => 'Sertifikat',
             'certificates' => $certificates,
+            'filters' => [
+                'category' => $category,
+                'q' => $search,
+                'page' => $page,
+                'total' => $count,
+                'totalPages' => $totalPages,
+            ],
+            'message' => session('message'),
         ]);
     }
 
     public function create()
     {
-        return view('mitra.certificate.create', [
+        return view('mitra.certificates', [
             'title' => 'Tambah Sertifikat',
+            'certificates' => [],
+            'filters' => ['category' => 'all', 'q' => '', 'page' => 1, 'total' => 0, 'totalPages' => 1],
         ]);
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nama_sertifikat' => 'required|string|max:255',
-            'penerbit' => 'required|string|max:255',
-            'tanggal_terbit' => 'required|date',
-            'tanggal_kadaluarsa' => 'nullable|date',
-            'nomor_sertifikat' => 'nullable|string|max:100',
-            'kategori' => 'required|in:teknis,keselamatan,manajemen,lainnya',
+            'name' => 'required|string|max:255',
+            'issued_by' => 'required|string|max:255',
+            'issued_date' => 'required|date',
+            'expiry_date' => 'nullable|date',
+            'certificate_number' => 'nullable|string|max:100',
+            'category' => 'required|in:teknis,keselamatan,manajemen,lainnya',
         ]);
 
-        $validated['user_id'] = Auth::id();
+        $userId = Auth::id() ?? 1;
         $validated['status_verifikasi'] = 'pending';
 
-        Certificate::create($validated);
+        $ok = $this->mitraService->createCertificate($userId, $validated);
 
-        return redirect()->route('mitra.certificate.index')
-            ->with('success', 'Sertifikat berhasil ditambahkan!');
+        return redirect()->route('mitra.certificates.index')
+            ->with('message', [
+                'type' => $ok ? 'success' : 'error',
+                'text' => $ok ? 'Sertifikat berhasil ditambahkan!' : 'Gagal menambahkan sertifikat.',
+            ]);
     }
 
     public function edit(string $id)
     {
-        $certificate = Certificate::where('id', $id)
-            ->where('user_id', Auth::id())
-            ->firstOrFail();
-
-        return view('mitra.certificate.edit', [
-            'title' => 'Edit Sertifikat',
-            'certificate' => $certificate,
-        ]);
+        return redirect()->route('mitra.certificates.index');
     }
 
     public function update(Request $request, string $id)
     {
-        $certificate = Certificate::where('id', $id)
-            ->where('user_id', Auth::id())
-            ->firstOrFail();
-
         $validated = $request->validate([
-            'nama_sertifikat' => 'required|string|max:255',
-            'penerbit' => 'required|string|max:255',
-            'tanggal_terbit' => 'required|date',
-            'tanggal_kadaluarsa' => 'nullable|date',
-            'nomor_sertifikat' => 'nullable|string|max:100',
-            'kategori' => 'required|in:teknis,keselamatan,manajemen,lainnya',
+            'name' => 'required|string|max:255',
+            'issued_by' => 'required|string|max:255',
+            'issued_date' => 'required|date',
+            'expiry_date' => 'nullable|date',
+            'certificate_number' => 'nullable|string|max:100',
+            'category' => 'required|in:teknis,keselamatan,manajemen,lainnya',
         ]);
 
-        $certificate->update($validated);
+        $userId = Auth::id() ?? 1;
+        $targetId = (int) ($request->input('id') ?: $id);
+        $ok = $this->mitraService->updateCertificate($userId, $targetId, $validated);
 
-        return redirect()->route('mitra.certificate.index')
-            ->with('success', 'Sertifikat berhasil diupdate!');
+        return redirect()->route('mitra.certificates.index')
+            ->with('message', [
+                'type' => $ok ? 'success' : 'error',
+                'text' => $ok ? 'Sertifikat berhasil diupdate!' : 'Gagal memperbarui sertifikat.',
+            ]);
     }
 
     public function show(string $id)
     {
-        $certificate = Certificate::where('id', $id)
-            ->where('user_id', Auth::id())
-            ->firstOrFail();
-
-        return view('mitra.certificate.show', [
-            'title' => 'Detail Sertifikat',
-            'certificate' => $certificate,
-        ]);
+        return redirect()->route('mitra.certificates.index');
     }
 
     public function destroy(string $id)
     {
-        $certificate = Certificate::where('id', $id)
-            ->where('user_id', Auth::id())
-            ->firstOrFail();
+        $userId = Auth::id() ?? 1;
+        $targetId = (int) (request('id') ?: $id);
+        $ok = $this->mitraService->deleteCertificate($userId, $targetId);
 
-        $certificate->delete();
-
-        return redirect()->route('mitra.certificate.index')
-            ->with('success', 'Sertifikat berhasil dihapus!');
+        return redirect()->route('mitra.certificates.index')
+            ->with('message', [
+                'type' => $ok ? 'success' : 'error',
+                'text' => $ok ? 'Sertifikat berhasil dihapus!' : 'Gagal menghapus sertifikat.',
+            ]);
     }
 }

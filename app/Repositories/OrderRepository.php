@@ -57,6 +57,17 @@ class OrderRepository
     }
 
     /**
+     * Get latest order for user
+     */
+    public function getLatestOrderForUser(int $userId): Order
+    {
+        return Order::byUser($userId)
+            ->withDetails()
+            ->latest('created_at')
+            ->firstOrFail();
+    }
+
+    /**
      * Transform Eloquent model to array for blade view
      * Maps model attributes to view's expected keys
      */

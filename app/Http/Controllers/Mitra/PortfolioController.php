@@ -3,36 +3,27 @@
 namespace App\Http\Controllers\Mitra;
 
 use App\Http\Controllers\Controller;
-use App\Models\Portfolio;
+use App\Services\MitraService;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class PortfolioController extends Controller
 {
-    public function __construct()
-    {
-    }
+    public function __construct(private MitraService $mitraService) {}
 
     public function index()
     {
-        $userId = Auth::id();
+        $userId = Auth::id() ?? 1;
         $category = request()->get('category', 'all');
         $search = request()->get('q', '');
         $page = request()->get('page', 1);
         $perPage = 9;
 
-        $query = Portfolio::where('user_id', $userId);
-
-        if ($category !== 'all') {
-            $query->where('kategori', $category);
-        }
-
-        if ($search) {
-            $query->where('judul', 'like', "%{$search}%");
-        }
-
-        $portfolios = $query->paginate($perPage);
+        $portfolios = $this->mitraService->paginatePortfolio($userId, [
+            'category' => $category,
+            'q' => $search,
+        ], $perPage);
 
         return view('mitra.portfolio.index', [
             'title' => 'Portfolio',
@@ -69,15 +60,8 @@ class PortfolioController extends Controller
             'foto_cover' => 'nullable|image|max:4096',
         ]);
 
-        // handle foto_cover upload
-        if ($request->hasFile('foto_cover')) {
-            $path = $request->file('foto_cover')->store('portfolio', 'public');
-            $validated['foto_cover'] = '/storage/' . $path;
-        }
-
-        $validated['user_id'] = Auth::id();
-
-        Portfolio::create($validated);
+        $userId = Auth::id() ?? 1;
+        $this->mitraService->createPortfolioWithFile($userId, $validated, $request->file('foto_cover'));
 
         return redirect()->route('mitra.portfolio.index')
             ->with('success', 'Portfolio berhasil ditambahkan!');
@@ -85,9 +69,7 @@ class PortfolioController extends Controller
 
     public function edit(string $id)
     {
-        $portfolio = Portfolio::where('id', $id)
-            ->where('user_id', Auth::id())
-            ->firstOrFail();
+        $portfolio = $this->mitraService->findPortfolioByUser(Auth::id() ?? 1, (int) $id);
 
         return view('mitra.portfolio.edit', [
             'title' => 'Edit Portfolio',
@@ -97,9 +79,8 @@ class PortfolioController extends Controller
 
     public function update(Request $request, string $id)
     {
-        $portfolio = Portfolio::where('id', $id)
-            ->where('user_id', Auth::id())
-            ->firstOrFail();
+        $userId = Auth::id() ?? 1;
+        $portfolio = $this->mitraService->findPortfolioByUser($userId, (int) $id);
 
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
@@ -113,19 +94,7 @@ class PortfolioController extends Controller
             'foto_cover' => 'nullable|image|max:4096',
         ]);
 
-        // handle foto_cover upload and delete previous if present
-        if ($request->hasFile('foto_cover')) {
-            // delete previous file from storage if exists
-            if (!empty($portfolio->foto_cover)) {
-                $prev = ltrim(str_replace('/storage/', '', $portfolio->foto_cover), '/');
-                try { Storage::disk('public')->delete($prev); } catch (\Throwable $e) {}
-            }
-
-            $path = $request->file('foto_cover')->store('portfolio', 'public');
-            $validated['foto_cover'] = '/storage/' . $path;
-        }
-
-        $portfolio->update($validated);
+        $this->mitraService->updatePortfolioWithFile($userId, (int) $id, $validated, $request->file('foto_cover'));
 
         return redirect()->route('mitra.portfolio.index')
             ->with('success', 'Portfolio berhasil diupdate!');
@@ -133,9 +102,7 @@ class PortfolioController extends Controller
 
     public function show(string $id)
     {
-        $portfolio = Portfolio::where('id', $id)
-            ->where('user_id', Auth::id())
-            ->firstOrFail();
+        $portfolio = $this->mitraService->findPortfolioByUser(Auth::id() ?? 1, (int) $id);
 
         return view('mitra.portfolio.show', [
             'title' => 'Detail Portfolio',
@@ -145,11 +112,7 @@ class PortfolioController extends Controller
 
     public function destroy(string $id)
     {
-        $portfolio = Portfolio::where('id', $id)
-            ->where('user_id', Auth::id())
-            ->firstOrFail();
-
-        $portfolio->delete();
+        $this->mitraService->deletePortfolio(Auth::id() ?? 1, (int) $id);
 
         return redirect()->route('mitra.portfolio.index')
             ->with('success', 'Portfolio berhasil dihapus!');

@@ -158,4 +158,59 @@ $statusText = [
         </div>
     </section>
 </section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const chartElement = document.getElementById('revenueChart');
+
+        if (!chartElement || typeof Chart === 'undefined') {
+            return;
+        }
+
+        const chartData = @json($chartData ?? ['labels' => [], 'data' => []]);
+        const ctx = chartElement.getContext('2d');
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: chartData.labels ?? [],
+                datasets: [{
+                    label: 'Pendapatan (Rp)',
+                    data: chartData.data ?? [],
+                    borderColor: '#006b9b',
+                    backgroundColor: 'rgba(0, 107, 155, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 3,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#006b9b',
+                    pointBorderWidth: 2,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: (value) => 'Rp ' + (Number(value) / 1000) + 'k',
+                        },
+                    },
+                    x: {
+                        grid: {
+                            display: false,
+                        },
+                    },
+                },
+            },
+        });
+    });
+</script>
 @endsection

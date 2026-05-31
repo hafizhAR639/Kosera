@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Service;
 use App\Services\OrderService;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreOrderRequest;
 use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
@@ -52,10 +53,7 @@ class OrderController extends Controller
 
         $order = $orderId
             ? $this->orderService->getOrderDetail($userId, $orderId)
-            : \App\Models\Order::byUser($userId)
-                ->withDetails()
-                ->latest('created_at')
-                ->firstOrFail();
+            : $this->orderService->getLatestOrderForUser($userId);
 
         return view('user.detail-pesanan', ['order' => $order]);
     }
@@ -67,7 +65,7 @@ class OrderController extends Controller
     public function create(Request $request)
     {
         $serviceId = $request->query('service_id');
-        Service::findOrFail($serviceId);
+        $this->orderService->ensureServiceExists((int) $serviceId);
 
         return redirect()->route('user.order.confirm', ['service_id' => $serviceId]);
     }
@@ -76,18 +74,11 @@ class OrderController extends Controller
      * Store order
      * Validation → Service → Redirect
      */
-    public function store(Request $request)
+    public function store(StoreOrderRequest $request)
     {
         $userId = Auth::id() ?? session('user_id', 1);
 
-        $validated = $request->validate([
-            'service_id' => 'required|exists:services,id',
-            'customer_name' => 'required|string|max:255',
-            'customer_phone' => 'required|string|max:20',
-            'customer_email' => 'required|email',
-            'alamat_lengkap' => 'required|string',
-            'catatan_customer' => 'nullable|string|max:1000',
-        ]);
+        $validated = $request->validated();
 
         $order = $this->orderService->createOrder($userId, $validated);
 

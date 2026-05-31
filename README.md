@@ -1,71 +1,60 @@
 # KOSERA
 
-KOSERA adalah aplikasi marketplace jasa berbasis Laravel untuk menghubungkan user dengan mitra profesional. Repositori ini berisi alur user dan mitra, riwayat pesanan, detail pesanan, profil, portofolio, sertifikat, dan flow registrasi bertahap.
+KOSERA adalah aplikasi marketplace jasa berbasis Laravel untuk mempertemukan user dengan mitra profesional. Aplikasi ini menangani layanan, pesanan, pembayaran, riwayat, rating, profil mitra, portofolio, sertifikat, dan registrasi bertahap.
 
-## Stack
+## Ringkasan
 
-- PHP 8.2+
-- Laravel 11
-- Blade templates
-- Tailwind CSS 3
-- Vite 6
-- MySQL / MariaDB
-- Composer
-- Node.js + npm
+- Framework: Laravel 11
+- Bahasa: PHP 8.2+
+- Frontend: Blade, Tailwind CSS 3, Vite
+- Database: MySQL / MariaDB
+- Tooling: Composer, Node.js, npm
 
 ## Fitur Utama
 
 - Dashboard user dan mitra
-- Pencarian layanan / mitra
-- Alur pesanan, konfirmasi, pembayaran berhasil, detail pesanan, dan riwayat
-- Rating dan status order
+- Pencarian layanan dan mitra
+- Alur pesanan dari buat pesanan sampai detail dan riwayat
+- Status order, pembayaran, dan rating
 - Profil user dan mitra
 - Portofolio mitra dan sertifikat
-- Demo data untuk akun user dan mitra
-- Layout shared sidebar untuk konsistensi UI
+- Registrasi bertahap untuk mitra
 
-## Struktur Folder
+## Struktur Proyek
 
-### Yang dipakai Laravel runtime
+Jika repository dibuka dari folder luar, masuk dulu ke folder proyek inti yang berisi file Laravel seperti `artisan`, `composer.json`, `routes/`, `app/`, dan `resources/`.
+
+Folder penting yang dipakai aplikasi:
 
 ```text
 app/
-  Http/Controllers/
-  Models/
-  Providers/
 bootstrap/
 config/
 database/
 public/
 resources/
-  css/
-  js/
-  views/
 routes/
 storage/
 tests/
 ```
 
-### Yang masih legacy / sisa migrasi
+Folder legacy yang tidak dipakai sebagai jalur utama aplikasi Laravel sudah dihapus atau dibiarkan kosong bila masih tersisa.
 
-```text
-app/Controllers/
-app/Core/
-app/Helpers/
-app/Views/
-config.php
-sidebar.php
-```
+## Kekurangan yang Masih Ada
 
-Catatan: folder legacy di atas tidak dipakai sebagai jalur utama aplikasi Laravel. Untuk pengembangan baru, fokus ke `routes/web.php`, `app/Http/Controllers`, `app/Models`, dan `resources/views`.
+- Beberapa fitur masih bergantung pada struktur data dan pola lama yang perlu dirapikan bertahap.
+- Sebagian view masih memakai data mapping manual agar tetap kompatibel dengan Blade yang sudah ada.
+- Belum semua bagian memiliki pengujian fitur yang lengkap.
+- Beberapa dokumentasi lama di repo semula banyak dan berulang, sehingga sekarang disederhanakan menjadi satu README ini.
 
-## Cara Install
+## Instalasi
 
 ### 1. Prasyarat
 
 - PHP 8.2 atau lebih baru
 - Composer
-- Node.js 18+ dan npm
+- Node.js 18 atau lebih baru
+- npm
 - MySQL atau MariaDB
 
 ### 2. Install dependency
@@ -75,19 +64,18 @@ composer install
 npm install
 ```
 
-### 3. Siapkan environment
+### 3. Siapkan file environment
 
 ```bash
 cp .env.example .env
 php artisan key:generate
 ```
 
-Lalu sesuaikan database di `.env`:
+Atur koneksi database di `.env`:
 
 ```env
 APP_NAME=KOSERA
 APP_ENV=local
-APP_KEY=
 APP_DEBUG=true
 APP_URL=http://127.0.0.1:8000
 
@@ -99,20 +87,15 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-### 4. Jalankan migrasi dan seed
+### 4. Buat database
+
+Jalankan migrasi untuk membangun schema:
 
 ```bash
-php artisan migrate
-php artisan db:seed
+php artisan migrate:fresh
 ```
 
-Database migration ada di `database/migrations`. Itu sumber utama skema database Laravel, jadi jika ada file SQL lama seperti `database_fix.sql` atau `database_example_inserts.sql`, anggap itu referensi tambahan saja.
-
-Jika ingin seed demo akun yang dipakai untuk pengujian UI:
-
-```bash
-php artisan db:seed --class=Database\\Seeders\\DemoAccountsSeeder
-```
+Jika ingin isi data awal, jalankan seeder yang tersedia di project.
 
 ### 5. Build frontend
 
@@ -120,7 +103,7 @@ php artisan db:seed --class=Database\\Seeders\\DemoAccountsSeeder
 npm run build
 ```
 
-Untuk development:
+Untuk mode development:
 
 ```bash
 npm run dev
@@ -132,7 +115,7 @@ npm run dev
 php artisan serve
 ```
 
-Akses aplikasi di:
+Lalu buka:
 
 ```text
 http://127.0.0.1:8000
@@ -141,6 +124,7 @@ http://127.0.0.1:8000
 ## Perintah Berguna
 
 ```bash
+php artisan migrate:status
 php artisan route:list
 php artisan test
 php artisan view:clear
@@ -149,29 +133,56 @@ php artisan config:clear
 php artisan route:clear
 ```
 
-## Alur Halaman Utama
+## Alur Fitur Inti
 
-- `user.dashboard` - dashboard utama user
-- `user.orders.history` - riwayat pesanan user
-- `user.orders.detail` - detail pesanan setelah pembayaran berhasil
-- `user.payment.success` - halaman pembayaran berhasil
-- `mitra.dashboard` - dashboard mitra
-- `mitra.orders.history` - riwayat pesanan mitra
+- User memilih layanan
+- User membuat pesanan
+- Sistem menyimpan order ke database
+- Mitra menerima pesanan masuk
+- Mitra melihat riwayat dan pendapatan
+- User melihat status, detail, dan hasil pembayaran
+
+## ERD Sederhana
+
+Relasi utama di database:
+
+```text
+users
+  ├─ hasMany -> orders
+  ├─ hasMany -> bank_accounts
+  ├─ hasMany -> identity_verifications
+  ├─ hasMany -> certificates
+  └─ hasMany -> portfolios
+
+services
+  ├─ belongsTo -> users
+  └─ hasMany -> orders
+
+orders
+  ├─ belongsTo -> users
+  ├─ belongsTo -> services
+  └─ hasOne -> earnings
+
+earnings
+  └─ belongsTo -> orders
+
+portfolio_images
+  └─ belongsTo -> portfolios
+```
 
 ## Catatan Implementasi
 
-- Layout user dan mitra memakai pola shared component agar tampilan konsisten.
-- Styling utama menggunakan Tailwind dan font Plus Jakarta Sans.
-- Route dan Blade view yang aktif ada di `routes/web.php` dan `resources/views`.
-- Folder legacy masih ada di repo supaya tidak memutus file lama, tapi tidak perlu dipakai untuk fitur baru.
-- File `gemini.md` tidak dipakai untuk runtime aplikasi dan sudah dihapus.
+- Controller dibuat tipis dan fokus ke validasi, pemanggilan service, dan pengembalian view.
+- Query utama dipindah ke service dan repository.
+- Blade dipertahankan strukturnya agar desain tidak berubah.
+- Grafik dashboard mitra memakai data dari server sehingga lebih dinamis.
 
-## Testing
+## Pengujian
 
 ```bash
 php artisan test
 ```
 
-## License
+## Lisensi
 
 MIT License.
