@@ -5,52 +5,50 @@ namespace App\Controllers\Mitra;
 use App\Core\Auth;
 use App\Core\Controller;
 use App\Core\Helpers;
-use App\Models\Mitra\OrderModel;
 
 class IncomingOrdersController extends Controller
 {
-    public function index(): void
-    {
-        Auth::requireLogin();
+	public function index(): void
+	{
+		Auth::requireLogin();
 
-        $userId = (int)Auth::getCurrentUserId();
-        $model = new OrderModel();
+		$userId = (int) Auth::getCurrentUserId();
 
-        $this->render('mitra/orders_incoming', [
-            'title' => 'Orderan Masuk',
-            'orders' => $model->getIncomingOrders($userId),
-            'statusLabel' => [
-                'pending' => 'Pending',
-                'confirmed' => 'Dikonfirmasi',
-                'in_progress' => 'Dikerjakan',
-            ],
-            'message' => Helpers::getMessage(),
-        ], 'mitra');
-    }
+		$service = new \App\Services\MitraService(new \App\Repositories\MitraRepository());
 
-    public function updateStatus(): void
-    {
-        Auth::requireLogin();
+		$orders = $service->getIncomingOrders($userId);
 
-        $userId = (int)Auth::getCurrentUserId();
-        $model = new OrderModel();
+		$this->render('mitra/orders_incoming', [
+			'title' => 'Orderan Masuk',
+			'message' => Helpers::getMessage(),
+			'orders' => $orders,
+		], 'mitra');
+	}
 
-        $action = $_POST['action'] ?? '';
-        $orderId = (int)($_POST['order_id'] ?? 0);
+	public function updateStatus(): void
+	{
+		Auth::requireLogin();
 
-        if ($orderId > 0 && in_array($action, ['accept', 'reject'], true)) {
-            $nextStatus = $action === 'accept' ? 'confirmed' : 'cancelled';
-            $updated = $model->updateIncomingOrderStatus($userId, $orderId, $nextStatus);
+		$userId = (int) Auth::getCurrentUserId();
+		$orderId = (int) ($_POST['order_id'] ?? 0);
+		$status = trim((string) ($_POST['status'] ?? ''));
 
-            if ($updated) {
-                Helpers::setMessage('success', $action === 'accept' ? 'Order berhasil diterima.' : 'Order berhasil ditolak.');
-            } else {
-                Helpers::setMessage('error', 'Order tidak ditemukan atau gagal diperbarui.');
-            }
-        } else {
-            Helpers::setMessage('error', 'Permintaan tidak valid.');
-        }
+		if ($orderId <= 0 || $status === '') {
+			Helpers::setMessage('error', 'Invalid request.');
+			$this->redirect(Helpers::routePath('/mitra/orders/incoming'));
+		}
 
-        $this->redirect(Helpers::routePath('/mitra/orders/incoming'));
-    }
+		$service = new \App\Services\MitraService(new \App\Repositories\MitraRepository());
+
+		$ok = $service->updateIncomingOrderStatus($userId, $orderId, $status);
+
+		if ($ok) {
+			Helpers::setMessage('success', 'Status pesanan berhasil diperbarui.');
+		} else {
+			Helpers::setMessage('error', 'Gagal memperbarui status pesanan.');
+		}
+
+		$this->redirect(Helpers::routePath('/mitra/orders/incoming'));
+	}
 }
+

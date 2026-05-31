@@ -5,7 +5,6 @@ namespace App\Controllers\Mitra;
 use App\Core\Auth;
 use App\Core\Controller;
 use App\Core\Helpers;
-use App\Models\Mitra\OrderModel;
 
 class OrderHistoryController extends Controller
 {
@@ -13,20 +12,21 @@ class OrderHistoryController extends Controller
     {
         Auth::requireLogin();
 
-        $userId = (int)Auth::getCurrentUserId();
-        $statusFilter = $_GET['status'] ?? 'all';
-        $dateFrom = $_GET['date_from'] ?? '';
-        $dateTo = $_GET['date_to'] ?? '';
+        $userId = (int) Auth::getCurrentUserId();
+        $status = $_GET['status'] ?? 'all';
+        $from = $_GET['from'] ?? '';
+        $to = $_GET['to'] ?? '';
 
-        $model = new OrderModel();
+        $service = new \App\Services\MitraService(new \App\Repositories\MitraRepository());
+
+        $orders = $service->getOrderHistory($userId, $status, $from, $to);
+        $stats = $service->getOrderHistoryStats($userId);
 
         $this->render('mitra/orders_history', [
-            'title' => 'Riwayat Pesanan',
-            'orders' => $model->getHistory($userId, $statusFilter, $dateFrom, $dateTo),
-            'stats' => $model->getHistoryStats($userId),
-            'statusFilter' => $statusFilter,
-            'dateFrom' => $dateFrom,
-            'dateTo' => $dateTo,
+            'title' => 'Riwayat Order',
+            'message' => Helpers::getMessage(),
+            'orders' => $orders,
+            'stats' => $stats,
         ], 'mitra');
     }
 
@@ -34,33 +34,34 @@ class OrderHistoryController extends Controller
     {
         Auth::requireLogin();
 
-        $userId = (int)Auth::getCurrentUserId();
-        $statusFilter = $_GET['status'] ?? 'all';
-        $dateFrom = $_GET['date_from'] ?? '';
-        $dateTo = $_GET['date_to'] ?? '';
+        $userId = (int) Auth::getCurrentUserId();
+        $status = $_GET['status'] ?? 'all';
+        $from = $_GET['from'] ?? '';
+        $to = $_GET['to'] ?? '';
 
-        $rows = (new OrderModel())->getHistoryForExport($userId, $statusFilter, $dateFrom, $dateTo);
+        $service = new \App\Services\MitraService(new \App\Repositories\MitraRepository());
+        $rows = $service->getOrderHistoryForExport($userId, $status, $from, $to);
 
-        header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename=riwayat-pesanan.csv');
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="order_history.csv"');
 
-        $output = fopen('php://output', 'w');
-        fputcsv($output, ['Kode Order', 'Tanggal', 'Layanan', 'Pelanggan', 'Alamat', 'Total', 'Status', 'Rating']);
+        $out = fopen('php://output', 'w');
+        fputcsv($out, ['order_code', 'order_date', 'service', 'customer_name', 'address', 'total_price', 'status', 'rating']);
 
-        foreach ($rows as $row) {
-            fputcsv($output, [
-                $row['order_code'],
-                $row['tanggal_order'],
-                $row['nama_layanan'],
-                $row['customer_name'],
-                $row['alamat_lengkap'],
-                $row['total_harga'],
-                $row['status'],
-                $row['rating'],
+        foreach ($rows as $r) {
+            fputcsv($out, [
+                $r['order_code'] ?? '',
+                $r['tanggal_order'] ?? '',
+                $r['nama_layanan'] ?? '',
+                $r['customer_name'] ?? '',
+                $r['alamat_lengkap'] ?? '',
+                $r['total_harga'] ?? 0,
+                $r['status'] ?? '',
+                $r['rating'] ?? '',
             ]);
         }
 
-        fclose($output);
-        exit();
+        fclose($out);
+        exit;
     }
 }

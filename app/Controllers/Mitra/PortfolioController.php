@@ -5,7 +5,6 @@ namespace App\Controllers\Mitra;
 use App\Core\Auth;
 use App\Core\Controller;
 use App\Core\Helpers;
-use App\Models\Mitra\PortfolioModel;
 
 class PortfolioController extends Controller
 {
@@ -13,36 +12,20 @@ class PortfolioController extends Controller
     {
         Auth::requireLogin();
 
-        $userId = (int)Auth::getCurrentUserId();
-        $model = new PortfolioModel();
+        $userId = (int) Auth::getCurrentUserId();
+        $category = $_GET['category'] ?? '';
+        $search = $_GET['search'] ?? '';
 
-        $category = Helpers::sanitize($_GET['category'] ?? 'all');
-        $search = Helpers::sanitize($_GET['q'] ?? '');
-        $page = max(1, (int)($_GET['page'] ?? 1));
-        $perPage = 9;
-        $offset = ($page - 1) * $perPage;
+        $service = new \App\Services\MitraService(new \App\Repositories\MitraRepository());
 
-        $total = $model->countByUser($userId, $category, $search);
-        $totalPages = max(1, (int)ceil($total / $perPage));
-        if ($page > $totalPages) {
-            $page = $totalPages;
-            $offset = ($page - 1) * $perPage;
-        }
+        $items = $service->getPortfolio($userId, $category, $search);
+        $count = $service->countPortfolio($userId, $category, $search);
 
-        $portfolios = $model->getListByUser($userId, $category, $search, $perPage, $offset);
-
-        $this->render('mitra/portfolio', [
+        $this->render('mitra/portfolio/index', [
             'title' => 'Portfolio',
-            'portfolios' => $portfolios,
-            'filters' => [
-                'category' => $category,
-                'q' => $search,
-                'page' => $page,
-                'perPage' => $perPage,
-                'total' => $total,
-                'totalPages' => $totalPages,
-            ],
             'message' => Helpers::getMessage(),
+            'items' => $items,
+            'count' => $count,
         ], 'mitra');
     }
 
@@ -50,20 +33,27 @@ class PortfolioController extends Controller
     {
         Auth::requireLogin();
 
-        $userId = (int)Auth::getCurrentUserId();
+        $userId = (int) Auth::getCurrentUserId();
+
         $payload = [
-            'judul' => Helpers::sanitize($_POST['judul'] ?? ''),
-            'deskripsi' => Helpers::sanitize($_POST['deskripsi'] ?? ''),
-            'kategori' => Helpers::sanitize($_POST['kategori'] ?? ''),
-            'tanggal_project' => Helpers::sanitize($_POST['tanggal_project'] ?? ''),
-            'client_name' => Helpers::sanitize($_POST['client_name'] ?? ''),
-            'lokasi' => Helpers::sanitize($_POST['lokasi'] ?? ''),
-            'nilai_project' => (float)($_POST['nilai_project'] ?? 0),
-            'durasi_hari' => (int)($_POST['durasi_hari'] ?? 0),
+            'judul' => $_POST['judul'] ?? '',
+            'deskripsi' => $_POST['deskripsi'] ?? '',
+            'kategori' => $_POST['kategori'] ?? '',
+            'tanggal_project' => $_POST['tanggal_project'] ?? '',
+            'client_name' => $_POST['client_name'] ?? '',
+            'lokasi' => $_POST['lokasi'] ?? '',
+            'nilai_project' => $_POST['nilai_project'] ?? 0,
+            'durasi_hari' => $_POST['durasi_hari'] ?? 0,
         ];
 
-        $ok = (new PortfolioModel())->create($userId, $payload);
-        Helpers::setMessage($ok ? 'success' : 'error', $ok ? 'Portfolio berhasil ditambahkan!' : 'Gagal menambahkan portfolio');
+        $service = new \App\Services\MitraService(new \App\Repositories\MitraRepository());
+        $ok = $service->createPortfolio($userId, $payload);
+
+        if ($ok) {
+            Helpers::setMessage('success', 'Portfolio berhasil ditambahkan.');
+        } else {
+            Helpers::setMessage('error', 'Gagal menambahkan portfolio.');
+        }
 
         $this->redirect(Helpers::routePath('/mitra/portfolio'));
     }
@@ -72,22 +62,28 @@ class PortfolioController extends Controller
     {
         Auth::requireLogin();
 
-        $userId = (int)Auth::getCurrentUserId();
-        $id = (int)($_POST['id'] ?? 0);
+        $userId = (int) Auth::getCurrentUserId();
+        $id = (int) ($_POST['id'] ?? 0);
 
         $payload = [
-            'judul' => Helpers::sanitize($_POST['judul'] ?? ''),
-            'deskripsi' => Helpers::sanitize($_POST['deskripsi'] ?? ''),
-            'kategori' => Helpers::sanitize($_POST['kategori'] ?? ''),
-            'tanggal_project' => Helpers::sanitize($_POST['tanggal_project'] ?? ''),
-            'client_name' => Helpers::sanitize($_POST['client_name'] ?? ''),
-            'lokasi' => Helpers::sanitize($_POST['lokasi'] ?? ''),
-            'nilai_project' => (float)($_POST['nilai_project'] ?? 0),
-            'durasi_hari' => (int)($_POST['durasi_hari'] ?? 0),
+            'judul' => $_POST['judul'] ?? '',
+            'deskripsi' => $_POST['deskripsi'] ?? '',
+            'kategori' => $_POST['kategori'] ?? '',
+            'tanggal_project' => $_POST['tanggal_project'] ?? '',
+            'client_name' => $_POST['client_name'] ?? '',
+            'lokasi' => $_POST['lokasi'] ?? '',
+            'nilai_project' => $_POST['nilai_project'] ?? 0,
+            'durasi_hari' => $_POST['durasi_hari'] ?? 0,
         ];
 
-        $ok = (new PortfolioModel())->update($userId, $id, $payload);
-        Helpers::setMessage($ok ? 'success' : 'error', $ok ? 'Portfolio berhasil diupdate!' : 'Gagal mengupdate portfolio');
+        $service = new \App\Services\MitraService(new \App\Repositories\MitraRepository());
+        $ok = $service->updatePortfolio($userId, $id, $payload);
+
+        if ($ok) {
+            Helpers::setMessage('success', 'Portfolio berhasil diperbarui.');
+        } else {
+            Helpers::setMessage('error', 'Gagal memperbarui portfolio.');
+        }
 
         $this->redirect(Helpers::routePath('/mitra/portfolio'));
     }
@@ -96,11 +92,17 @@ class PortfolioController extends Controller
     {
         Auth::requireLogin();
 
-        $userId = (int)Auth::getCurrentUserId();
-        $id = (int)($_POST['id'] ?? 0);
+        $userId = (int) Auth::getCurrentUserId();
+        $id = (int) ($_POST['id'] ?? 0);
 
-        $ok = (new PortfolioModel())->delete($userId, $id);
-        Helpers::setMessage($ok ? 'success' : 'error', $ok ? 'Portfolio berhasil dihapus!' : 'Gagal menghapus portfolio');
+        $service = new \App\Services\MitraService(new \App\Repositories\MitraRepository());
+        $ok = $service->deletePortfolio($userId, $id);
+
+        if ($ok) {
+            Helpers::setMessage('success', 'Portfolio berhasil dihapus.');
+        } else {
+            Helpers::setMessage('error', 'Gagal menghapus portfolio.');
+        }
 
         $this->redirect(Helpers::routePath('/mitra/portfolio'));
     }

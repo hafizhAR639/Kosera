@@ -27,7 +27,7 @@ $statusText = [
 
     <header class="rounded-[28px] bg-white/85 p-6 shadow-[0_10px_30px_rgba(1,51,109,0.12)] backdrop-blur sm:p-8">
         <p class="text-sm font-semibold uppercase tracking-[0.18em] text-[#006b9b]/70">Dashboard Mitra</p>
-        <h1 class="mt-2 text-3xl font-semibold text-black sm:text-4xl">Selamat Datang {{ auth()->user()->nama }}!</h1>
+        <h1 class="mt-2 text-3xl font-semibold text-black sm:text-4xl">Selamat Datang</h1>
         <p class="mt-2 max-w-2xl text-slate-600">Semua ringkasan utama ada di sini. Tampilan dibuat lebih lapang agar mirip mood Figma dan tetap nyaman di mobile.</p>
     </header>
 
@@ -44,10 +44,10 @@ $statusText = [
             <p class="mt-4 text-sm text-white/80">Akumulasi pendapatan layanan aktif.</p>
         </article>
 
-        <article class="min-h-[210px] rounded-[30px] bg-white p-6 shadow-[0_12px_34px_rgba(0,0,0,0.12)] sm:p-8">
-            <p class="text-base font-semibold uppercase tracking-wide text-[#006b9b]">Layanan Aktif</p>
-            <p class="mt-8 text-5xl font-bold text-slate-900">{{ $stats['services_count'] ?? 0 }}</p>
-            <a href="{{ route('mitra.portfolio.index') }}" class="mt-6 inline-block text-sm font-semibold text-[#006b9b]">Kelola Layanan</a>
+        <article class="min-h-[210px] rounded-[30px] bg-gradient-to-br from-[#006b9b] via-[#0d7cae] to-[#31a6d8] p-6 text-white shadow-[0_16px_40px_rgba(0,65,110,0.35)] sm:p-8">
+            <p class="text-base font-semibold uppercase tracking-wide text-white/90">Layanan Aktif</p>
+            <p class="mt-8 text-5xl font-bold text-white">{{ $stats['services_count'] ?? 0 }}</p>
+            <a href="{{ route('mitra.portfolio.index') }}" class="mt-6 inline-block text-sm font-semibold text-white/80">Kelola Layanan</a>
         </article>
 
         <article class="min-h-[210px] rounded-[30px] bg-white p-6 shadow-[0_12px_34px_rgba(0,0,0,0.12)] sm:p-8">
@@ -57,6 +57,17 @@ $statusText = [
             <p class="mt-2 text-sm text-slate-500">Performa layanan Anda konsisten baik.</p>
         </article>
     </div>
+
+    <!-- Revenue Chart Section -->
+    <section class="rounded-3xl bg-white p-6 shadow-sm">
+        <header class="mb-4">
+            <h2 class="text-xl font-bold text-slate-900">Grafik Pendapatan</h2>
+            <p class="text-sm text-slate-500">Ringkasan pendapatan bulanan Anda.</p>
+        </header>
+        <div class="relative w-full h-[300px]">
+            <canvas id="revenueChart"></canvas>
+        </div>
+    </section>
 
     <div class="grid gap-6 xl:grid-cols-2">
         <section class="rounded-3xl bg-white p-6 shadow-sm">

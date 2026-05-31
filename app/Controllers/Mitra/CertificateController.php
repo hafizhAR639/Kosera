@@ -5,7 +5,6 @@ namespace App\Controllers\Mitra;
 use App\Core\Auth;
 use App\Core\Controller;
 use App\Core\Helpers;
-use App\Models\Mitra\CertificateModel;
 
 class CertificateController extends Controller
 {
@@ -13,36 +12,20 @@ class CertificateController extends Controller
     {
         Auth::requireLogin();
 
-        $userId = (int)Auth::getCurrentUserId();
-        $model = new CertificateModel();
+        $userId = (int) Auth::getCurrentUserId();
+        $category = $_GET['category'] ?? '';
+        $search = $_GET['search'] ?? '';
 
-        $category = Helpers::sanitize($_GET['category'] ?? 'all');
-        $search = Helpers::sanitize($_GET['q'] ?? '');
-        $page = max(1, (int)($_GET['page'] ?? 1));
-        $perPage = 9;
-        $offset = ($page - 1) * $perPage;
+        $service = new \App\Services\MitraService(new \App\Repositories\MitraRepository());
 
-        $total = $model->countByUser($userId, $category, $search);
-        $totalPages = max(1, (int)ceil($total / $perPage));
-        if ($page > $totalPages) {
-            $page = $totalPages;
-            $offset = ($page - 1) * $perPage;
-        }
-
-        $certificates = $model->getListByUser($userId, $category, $search, $perPage, $offset);
+        $certs = $service->getCertificates($userId, $category, $search);
+        $count = $service->countCertificates($userId, $category, $search);
 
         $this->render('mitra/certificates', [
             'title' => 'Sertifikat',
-            'certificates' => $certificates,
-            'filters' => [
-                'category' => $category,
-                'q' => $search,
-                'page' => $page,
-                'perPage' => $perPage,
-                'total' => $total,
-                'totalPages' => $totalPages,
-            ],
             'message' => Helpers::getMessage(),
+            'certificates' => $certs,
+            'count' => $count,
         ], 'mitra');
     }
 
@@ -50,30 +33,26 @@ class CertificateController extends Controller
     {
         Auth::requireLogin();
 
-        $userId = (int)Auth::getCurrentUserId();
-        $filePath = '';
-
-        if (isset($_FILES['file_sertifikat']) && $_FILES['file_sertifikat']['error'] === 0) {
-            $upload = Helpers::uploadFile($_FILES['file_sertifikat'], 'uploads/certificates/', ['jpg', 'jpeg', 'png', 'pdf']);
-            if (!$upload['success']) {
-                Helpers::setMessage('error', $upload['message']);
-                $this->redirect(Helpers::routePath('/mitra/certificates'));
-            }
-            $filePath = $upload['file_path'];
-        }
+        $userId = (int) Auth::getCurrentUserId();
 
         $payload = [
-            'nama_sertifikat' => Helpers::sanitize($_POST['nama_sertifikat'] ?? ''),
-            'penerbit' => Helpers::sanitize($_POST['penerbit'] ?? ''),
-            'tanggal_terbit' => Helpers::sanitize($_POST['tanggal_terbit'] ?? ''),
-            'tanggal_kadaluarsa' => Helpers::sanitize($_POST['tanggal_kadaluarsa'] ?? ''),
-            'nomor_sertifikat' => Helpers::sanitize($_POST['nomor_sertifikat'] ?? ''),
-            'kategori' => Helpers::sanitize($_POST['kategori'] ?? ''),
-            'file_path' => $filePath,
+            'nama_sertifikat' => $_POST['nama_sertifikat'] ?? '',
+            'penerbit' => $_POST['penerbit'] ?? '',
+            'tanggal_terbit' => $_POST['tanggal_terbit'] ?? '',
+            'tanggal_kadaluarsa' => $_POST['tanggal_kadaluarsa'] ?? '',
+            'nomor_sertifikat' => $_POST['nomor_sertifikat'] ?? '',
+            'kategori' => $_POST['kategori'] ?? '',
+            'file_path' => $_POST['file_path'] ?? '',
         ];
 
-        $ok = (new CertificateModel())->create($userId, $payload);
-        Helpers::setMessage($ok ? 'success' : 'error', $ok ? 'Sertifikat berhasil ditambahkan!' : 'Gagal menambahkan sertifikat');
+        $service = new \App\Services\MitraService(new \App\Repositories\MitraRepository());
+        $ok = $service->createCertificate($userId, $payload);
+
+        if ($ok) {
+            Helpers::setMessage('success', 'Sertifikat berhasil ditambahkan.');
+        } else {
+            Helpers::setMessage('error', 'Gagal menambahkan sertifikat.');
+        }
 
         $this->redirect(Helpers::routePath('/mitra/certificates'));
     }
@@ -82,20 +61,26 @@ class CertificateController extends Controller
     {
         Auth::requireLogin();
 
-        $userId = (int)Auth::getCurrentUserId();
-        $id = (int)($_POST['id'] ?? 0);
+        $userId = (int) Auth::getCurrentUserId();
+        $id = (int) ($_POST['id'] ?? 0);
 
         $payload = [
-            'nama_sertifikat' => Helpers::sanitize($_POST['nama_sertifikat'] ?? ''),
-            'penerbit' => Helpers::sanitize($_POST['penerbit'] ?? ''),
-            'tanggal_terbit' => Helpers::sanitize($_POST['tanggal_terbit'] ?? ''),
-            'tanggal_kadaluarsa' => Helpers::sanitize($_POST['tanggal_kadaluarsa'] ?? ''),
-            'nomor_sertifikat' => Helpers::sanitize($_POST['nomor_sertifikat'] ?? ''),
-            'kategori' => Helpers::sanitize($_POST['kategori'] ?? ''),
+            'nama_sertifikat' => $_POST['nama_sertifikat'] ?? '',
+            'penerbit' => $_POST['penerbit'] ?? '',
+            'tanggal_terbit' => $_POST['tanggal_terbit'] ?? '',
+            'tanggal_kadaluarsa' => $_POST['tanggal_kadaluarsa'] ?? '',
+            'nomor_sertifikat' => $_POST['nomor_sertifikat'] ?? '',
+            'kategori' => $_POST['kategori'] ?? '',
         ];
 
-        $ok = (new CertificateModel())->update($userId, $id, $payload);
-        Helpers::setMessage($ok ? 'success' : 'error', $ok ? 'Sertifikat berhasil diupdate!' : 'Gagal mengupdate sertifikat');
+        $service = new \App\Services\MitraService(new \App\Repositories\MitraRepository());
+        $ok = $service->updateCertificate($userId, $id, $payload);
+
+        if ($ok) {
+            Helpers::setMessage('success', 'Sertifikat berhasil diperbarui.');
+        } else {
+            Helpers::setMessage('error', 'Gagal memperbarui sertifikat.');
+        }
 
         $this->redirect(Helpers::routePath('/mitra/certificates'));
     }
@@ -104,11 +89,17 @@ class CertificateController extends Controller
     {
         Auth::requireLogin();
 
-        $userId = (int)Auth::getCurrentUserId();
-        $id = (int)($_POST['id'] ?? 0);
+        $userId = (int) Auth::getCurrentUserId();
+        $id = (int) ($_POST['id'] ?? 0);
 
-        $ok = (new CertificateModel())->delete($userId, $id);
-        Helpers::setMessage($ok ? 'success' : 'error', $ok ? 'Sertifikat berhasil dihapus!' : 'Gagal menghapus sertifikat');
+        $service = new \App\Services\MitraService(new \App\Repositories\MitraRepository());
+        $ok = $service->deleteCertificate($userId, $id);
+
+        if ($ok) {
+            Helpers::setMessage('success', 'Sertifikat berhasil dihapus.');
+        } else {
+            Helpers::setMessage('error', 'Gagal menghapus sertifikat.');
+        }
 
         $this->redirect(Helpers::routePath('/mitra/certificates'));
     }

@@ -28,6 +28,7 @@ class User extends Authenticatable
         'avatar',
         'join_date',
         'status',
+        'role',
     ];
 
     /**
@@ -100,5 +101,21 @@ class User extends Authenticatable
     public function points(): HasMany
     {
         return $this->hasMany(Point::class);
+    }
+
+    /**
+     * Get all bank accounts for the user.
+     */
+    public function bankAccounts(): HasMany
+    {
+        return $this->hasMany(BankAccount::class);
+    }
+
+    /**
+     * Get all identity verifications for the user.
+     */
+    public function identityVerifications(): HasMany
+    {
+        return $this->hasMany(IdentityVerification::class);
     }
 }

@@ -14,10 +14,13 @@ class PortfolioImage extends Model
         'image_path',
         'caption',
         'urutan',
+        'original_filename',
+        'file_size',
     ];
 
     protected $casts = [
         'created_at' => 'datetime',
+        'file_size' => 'integer',
     ];
 
     /**

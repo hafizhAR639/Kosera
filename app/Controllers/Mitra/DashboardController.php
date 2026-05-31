@@ -5,7 +5,6 @@ namespace App\Controllers\Mitra;
 use App\Core\Auth;
 use App\Core\Controller;
 use App\Core\Helpers;
-use App\Models\Mitra\DashboardModel;
 
 class DashboardController extends Controller
 {
@@ -14,18 +13,20 @@ class DashboardController extends Controller
         Auth::requireLogin();
 
         $userId = (int)Auth::getCurrentUserId();
-        $model = new DashboardModel();
 
-        $user = $model->getUserById($userId);
+        // Use MitraService (wraps legacy DashboardModel) to fetch data
+        $service = new \App\Services\MitraService(new \App\Repositories\MitraRepository());
+
+        $user = $service->getUserById($userId);
         if ($user === null) {
             Helpers::setMessage('error', 'Data pengguna tidak ditemukan.');
             $this->redirect(Helpers::routePath('/logout'));
         }
 
-        $stats = $model->getStats($userId);
-        $recentOrders = $model->getRecentOrders($userId);
-        $recentCertificates = $model->getRecentCertificates($userId);
-        $recentPortfolio = $model->getRecentPortfolio($userId);
+        $stats = $service->getStats($userId);
+        $recentOrders = $service->getRecentOrders($userId, 5);
+        $recentCertificates = $service->getRecentCertificates($userId, 4);
+        $recentPortfolio = $service->getRecentPortfolio($userId, 4);
 
         $this->render('mitra/dashboard', [
             'title' => 'Dashboard Mitra',

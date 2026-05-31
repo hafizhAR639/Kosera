@@ -5,7 +5,6 @@ namespace App\Controllers\Mitra;
 use App\Core\Auth;
 use App\Core\Controller;
 use App\Core\Helpers;
-use App\Models\Mitra\ProfileModel;
 
 class ProfileController extends Controller
 {
@@ -13,19 +12,15 @@ class ProfileController extends Controller
     {
         Auth::requireLogin();
 
-        $userId = (int)Auth::getCurrentUserId();
-        $profile = (new ProfileModel())->getUserById($userId);
+        $userId = (int) Auth::getCurrentUserId();
+        $service = new \App\Services\MitraService(new \App\Repositories\MitraRepository());
 
-        if ($profile === null) {
-            Helpers::setMessage('error', 'Profil tidak ditemukan.');
-            $this->redirect(Helpers::routePath('/logout'));
-        }
+        $user = $service->getProfile($userId);
 
         $this->render('mitra/profile_show', [
-            'title' => 'Profil Saya',
-            'profile' => $profile,
-            'avatarInitial' => strtoupper(substr($profile['nama'], 0, 1)),
+            'title' => 'Profil Mitra',
             'message' => Helpers::getMessage(),
+            'user' => $user,
         ], 'mitra');
     }
 
@@ -33,18 +28,15 @@ class ProfileController extends Controller
     {
         Auth::requireLogin();
 
-        $userId = (int)Auth::getCurrentUserId();
-        $profile = (new ProfileModel())->getUserById($userId);
+        $userId = (int) Auth::getCurrentUserId();
+        $service = new \App\Services\MitraService(new \App\Repositories\MitraRepository());
 
-        if ($profile === null) {
-            Helpers::setMessage('error', 'Profil tidak ditemukan.');
-            $this->redirect(Helpers::routePath('/logout'));
-        }
+        $user = $service->getProfile($userId);
 
         $this->render('mitra/profile_edit', [
             'title' => 'Edit Profil',
-            'profile' => $profile,
             'message' => Helpers::getMessage(),
+            'user' => $user,
         ], 'mitra');
     }
 
@@ -52,40 +44,25 @@ class ProfileController extends Controller
     {
         Auth::requireLogin();
 
-        $userId = (int)Auth::getCurrentUserId();
-        $nama = Helpers::sanitize($_POST['nama'] ?? '');
-        $phone = Helpers::sanitize($_POST['phone'] ?? '');
-        $location = Helpers::sanitize($_POST['location'] ?? '');
-        $bio = Helpers::sanitize($_POST['bio'] ?? '');
+        $userId = (int) Auth::getCurrentUserId();
 
-        if ($nama === '') {
-            Helpers::setMessage('error', 'Nama wajib diisi.');
-            $this->redirect(Helpers::routePath('/mitra/profile/edit'));
-        }
+        $payload = [
+            'nama' => $_POST['nama'] ?? '',
+            'phone' => $_POST['phone'] ?? '',
+            'location' => $_POST['location'] ?? '',
+            'bio' => $_POST['bio'] ?? '',
+            'avatar' => $_POST['avatar'] ?? null,
+        ];
 
-        $avatarPath = null;
-        if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] !== UPLOAD_ERR_NO_FILE) {
-            if (!is_dir('uploads/avatar')) {
-                mkdir('uploads/avatar', 0755, true);
-            }
+        $service = new \App\Services\MitraService(new \App\Repositories\MitraRepository());
+        $ok = $service->updateProfile($userId, $payload);
 
-            $upload = Helpers::uploadFile($_FILES['avatar'], 'uploads/avatar/', ['jpg', 'jpeg', 'png', 'webp']);
-            if (!$upload['success']) {
-                Helpers::setMessage('error', $upload['message']);
-                $this->redirect(Helpers::routePath('/mitra/profile/edit'));
-            }
-
-            $avatarPath = $upload['file_path'];
-        }
-
-        $updated = (new ProfileModel())->updateProfile($userId, $nama, $phone, $location, $bio, $avatarPath);
-
-        if ($updated) {
+        if ($ok) {
             Helpers::setMessage('success', 'Profil berhasil diperbarui.');
-            $this->redirect(Helpers::routePath('/mitra/profile'));
+        } else {
+            Helpers::setMessage('error', 'Gagal memperbarui profil.');
         }
 
-        Helpers::setMessage('error', 'Gagal memperbarui profil.');
-        $this->redirect(Helpers::routePath('/mitra/profile/edit'));
+        $this->redirect(Helpers::routePath('/mitra/profile'));
     }
 }

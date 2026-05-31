@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Mitra;
 
 use App\Http\Controllers\Controller;
 use App\Models\Portfolio;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,7 +12,6 @@ class PortfolioController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
     }
 
     public function index()
@@ -66,7 +66,14 @@ class PortfolioController extends Controller
             'lokasi' => 'nullable|string|max:100',
             'nilai_project' => 'nullable|numeric',
             'durasi_hari' => 'nullable|integer',
+            'foto_cover' => 'nullable|image|max:4096',
         ]);
+
+        // handle foto_cover upload
+        if ($request->hasFile('foto_cover')) {
+            $path = $request->file('foto_cover')->store('portfolio', 'public');
+            $validated['foto_cover'] = '/storage/' . $path;
+        }
 
         $validated['user_id'] = Auth::id();
 
@@ -103,7 +110,20 @@ class PortfolioController extends Controller
             'lokasi' => 'nullable|string|max:100',
             'nilai_project' => 'nullable|numeric',
             'durasi_hari' => 'nullable|integer',
+            'foto_cover' => 'nullable|image|max:4096',
         ]);
+
+        // handle foto_cover upload and delete previous if present
+        if ($request->hasFile('foto_cover')) {
+            // delete previous file from storage if exists
+            if (!empty($portfolio->foto_cover)) {
+                $prev = ltrim(str_replace('/storage/', '', $portfolio->foto_cover), '/');
+                try { Storage::disk('public')->delete($prev); } catch (\Throwable $e) {}
+            }
+
+            $path = $request->file('foto_cover')->store('portfolio', 'public');
+            $validated['foto_cover'] = '/storage/' . $path;
+        }
 
         $portfolio->update($validated);
 

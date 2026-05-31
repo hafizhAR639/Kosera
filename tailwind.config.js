@@ -11,8 +11,25 @@ export default {
     ],
     theme: {
         extend: {
+            colors: {
+                kosera: {
+                    50:  '#e8f4fb',
+                    100: '#c5e3f5',
+                    200: '#8fc8ed',
+                    400: '#3a96cc',
+                    600: '#1a6fa0',
+                    700: '#155c87',
+                    800: '#0f4366',
+                    900: '#092c45',
+                },
+            },
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Nunito', ...defaultTheme.fontFamily.sans],
+            },
+            fontWeight: {
+                '600': '600',
+                '700': '700',
+                '800': '800',
             },
         },
     },
