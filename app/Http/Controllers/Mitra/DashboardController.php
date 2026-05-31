@@ -3,43 +3,29 @@
 namespace App\Http\Controllers\Mitra;
 
 use App\Http\Controllers\Controller;
-use App\Models\Certificate;
-use App\Models\Order;
-use App\Models\Portfolio;
-use App\Models\Service;
+use App\Services\MitraService;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+    public function __construct(private MitraService $mitraService) {}
 
     public function index()
     {
-        $userId = Auth::id();
-
-        $stats = [
-            'total_orders' => Order::where('user_id', $userId)->count(),
-            'completed_orders' => Order::where('user_id', $userId)->where('status', 'completed')->count(),
-            'pending_orders' => Order::where('user_id', $userId)->where('status', 'pending')->count(),
-            'in_progress_orders' => Order::where('user_id', $userId)->where('status', 'in_progress')->count(),
-            'total_earnings' => Order::where('user_id', $userId)->where('status', 'completed')->sum('total_harga'),
-            'total_portfolios' => Portfolio::where('user_id', $userId)->count(),
-            'total_certificates' => Certificate::where('user_id', $userId)->count(),
-            'total_services' => Service::where('user_id', $userId)->count(),
-        ];
-
-        $recentOrders = Order::where('user_id', $userId)
-            ->orderBy('created_at', 'desc')
-            ->limit(5)
-            ->get();
+        $userId = Auth::id() ?? 1;
+        $stats = $this->mitraService->getStats($userId);
+        $recentOrders = $this->mitraService->getRecentOrders($userId, 5);
+        $recentCertificates = $this->mitraService->getRecentCertificates($userId, 4);
+        $recentPortfolio = $this->mitraService->getRecentPortfolio($userId, 4);
+        $chartData = $this->mitraService->getRevenueChart($userId, 6);
 
         return view('mitra.dashboard', [
             'title' => 'Dashboard',
             'stats' => $stats,
             'recentOrders' => $recentOrders,
+            'chartData' => $chartData,
+            'recentCertificates' => $recentCertificates,
+            'recentPortfolio' => $recentPortfolio,
         ]);
     }
 }

@@ -4,13 +4,14 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\AuthRegistrationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function __construct()
+    public function __construct(private AuthRegistrationService $registrationService)
     {
         $this->middleware('guest')->except('logout');
     }
@@ -64,13 +65,36 @@ class AuthController extends Controller
             ->with('success', 'Registrasi berhasil! Selamat datang!');
     }
 
+    /**
+     * Step-based registration flow used by routes/web.php (/register POST)
+     */
+    public function processStepRegistration(Request $request)
+    {
+        $input = $request->except('_token');
+        $stored = session('register.data', []);
+
+        $result = $this->registrationService->processStep($input, $stored);
+
+        session(['register.data' => $result['stored']]);
+
+        if (!empty($result['flash'])) {
+            session()->flash('message', $result['flash']);
+        }
+
+        if (!empty($result['clear_session'])) {
+            session()->forget('register.data');
+        }
+
+        return redirect()->route($result['redirect_route'], $result['redirect_params'] ?? []);
+    }
+
     public function logout(Request $request)
     {
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')
+        return redirect('/')
             ->with('success', 'Logout berhasil.');
     }
 }

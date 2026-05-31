@@ -1,190 +1,188 @@
-# KOSERA Mitra - Platform Mitra Profesional
+# KOSERA
 
-Platform manajemen untuk mitra profesional yang menyediakan layanan, mengelola pesanan, portofolio, dan sertifikat. Aplikasi ini adalah **migrasi dari custom PHP ke Laravel 11** dengan UI modern menggunakan **Tailwind CSS**.
+KOSERA adalah aplikasi marketplace jasa berbasis Laravel untuk mempertemukan user dengan mitra profesional. Aplikasi ini menangani layanan, pesanan, pembayaran, riwayat, rating, profil mitra, portofolio, sertifikat, dan registrasi bertahap.
 
-## 📋 Fitur Utama
+## Ringkasan
 
-- **Dashboard** - Ringkasan pesanan, pendapatan, dan statistik mitra
-- **Portfolio** - Kelola proyek dan layanan yang ditawarkan
-- **Orderan** - Terima, tolak, dan kelola pesanan masuk serta riwayat
-- **Sertifikat** - Upload dan kelola sertifikat profesional
-- **Profil** - Edit data pribadi dan deskripsi diri
-- **Responsive Design** - Mobile-first dengan Tailwind CSS
+- Framework: Laravel 11
+- Bahasa: PHP 8.2+
+- Frontend: Blade, Tailwind CSS 3, Vite
+- Database: MySQL / MariaDB
+- Tooling: Composer, Node.js, npm
 
-## 🏗️ Stack Teknologi
+## Fitur Utama
 
-- **Framework**: Laravel 11
-- **Database**: MySQL/MariaDB
-- **Frontend**: Tailwind CSS + Blade Templates
-- **Build Tool**: Vite
-- **CSS Framework**: Tailwind CSS
+- Dashboard user dan mitra
+- Pencarian layanan dan mitra
+- Alur pesanan dari buat pesanan sampai detail dan riwayat
+- Status order, pembayaran, dan rating
+- Profil user dan mitra
+- Portofolio mitra dan sertifikat
+- Registrasi bertahap untuk mitra
 
-## 📁 Struktur Project
+## Struktur Proyek
 
-```
-kosera-mitra-new/
-├── app/
-│   ├── Http/Controllers/Mitra/     # Mitra Controllers
-│   ├── Models/                     # Database Models
-│   ├── Helpers/                    # Helper Functions
-│   └── Providers/                  # Service Providers
-├── resources/
-│   ├── views/
-│   │   ├── layouts/mitra.blade.php # Main Layout
-│   │   ├── mitra/                  # Mitra Views
-│   │   └── auth/                   # Auth Views
-│   ├── css/
-│   └── js/
-├── routes/
-│   ├── web.php                     # Web Routes
-│   └── console.php                 # Console Routes
-├── database/
-│   ├── migrations/                 # Database Migrations
-│   ├── seeders/                    # Database Seeders
-│   └── factories/                  # Model Factories
-├── public/                         # Public Assets
-└── storage/                        # Files Storage
+Jika repository dibuka dari folder luar, masuk dulu ke folder proyek inti yang berisi file Laravel seperti `artisan`, `composer.json`, `routes/`, `app/`, dan `resources/`.
+
+Folder penting yang dipakai aplikasi:
+
+```text
+app/
+bootstrap/
+config/
+database/
+public/
+resources/
+routes/
+storage/
+tests/
 ```
 
-## 🚀 Instalasi & Setup
+Folder legacy yang tidak dipakai sebagai jalur utama aplikasi Laravel sudah dihapus atau dibiarkan kosong bila masih tersisa.
 
-### Prerequisites
-- PHP 8.2+
+## Kekurangan yang Masih Ada
+
+- Beberapa fitur masih bergantung pada struktur data dan pola lama yang perlu dirapikan bertahap.
+- Sebagian view masih memakai data mapping manual agar tetap kompatibel dengan Blade yang sudah ada.
+- Belum semua bagian memiliki pengujian fitur yang lengkap.
+- Beberapa dokumentasi lama di repo semula banyak dan berulang, sehingga sekarang disederhanakan menjadi satu README ini.
+
+## Instalasi
+
+### 1. Prasyarat
+
+- PHP 8.2 atau lebih baru
 - Composer
-- Node.js & NPM
-- MySQL/MariaDB
+- Node.js 18 atau lebih baru
+- npm
+- MySQL atau MariaDB
 
-### Langkah Instalasi
+### 2. Install dependency
 
-1. **Clone Repository**
-```bash
-git clone <repository-url>
-cd kosera-mitra-new
-```
-
-2. **Install Dependencies**
 ```bash
 composer install
 npm install
 ```
 
-3. **Environment Setup**
+### 3. Siapkan file environment
+
 ```bash
 cp .env.example .env
 php artisan key:generate
 ```
 
-4. **Database Configuration**
-Edit `.env` untuk konfigurasi database:
+Atur koneksi database di `.env`:
+
 ```env
+APP_NAME=KOSERA
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://127.0.0.1:8000
+
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=kosera_mitra
+DB_DATABASE=kosera
 DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-5. **Migrations**
+### 4. Buat database
+
+Jalankan migrasi untuk membangun schema:
+
 ```bash
-php artisan migrate
+php artisan migrate:fresh
 ```
 
-6. **Build Assets**
+Jika ingin isi data awal, jalankan seeder yang tersedia di project.
+
+### 5. Build frontend
+
 ```bash
 npm run build
-# atau untuk development dengan hot reload
+```
+
+Untuk mode development:
+
+```bash
 npm run dev
 ```
 
-7. **Jalankan Application**
+### 6. Jalankan aplikasi
+
 ```bash
 php artisan serve
 ```
 
-Akses aplikasi di `http://localhost:8000`
+Lalu buka:
 
-## 📚 API Routes
-
-### Mitra Protected Routes
-```
-GET/POST  /mitra/dashboard              - Dashboard utama
-GET/POST  /mitra/portfolio             - Kelola portfolio
-GET/POST  /mitra/orders/incoming       - Orderan masuk
-GET/POST  /mitra/orders/history        - Riwayat pesanan
-GET/POST  /mitra/certificates          - Kelola sertifikat
-GET       /mitra/profile               - Lihat profil
-GET/POST  /mitra/profile/edit          - Edit profil
+```text
+http://127.0.0.1:8000
 ```
 
-## 🗄️ Database Models
+## Perintah Berguna
 
-- **User** - Data user/mitra
-- **Portfolio** - Project dan layanan
-- **Certificate** - Sertifikat profesional
-- **Order** - Pesanan dari klien
-- **Earning** - Riwayat pendapatan
-- **Point** - Poin dan reputasi service
+```bash
+php artisan migrate:status
+php artisan route:list
+php artisan test
+php artisan view:clear
+php artisan cache:clear
+php artisan config:clear
+php artisan route:clear
+```
 
-## 🎨 UI Design
+## Alur Fitur Inti
 
-Menggunakan **Tailwind CSS** v3 dengan komponen:
-- Grid layout responsive (mobile-first)
-- Modal dialogs untuk form
-- Form validation client & server
-- Status badges dengan warna semantik
-- Pagination dengan navigation
-- Data tables responsif
-- Card-based layouts
+- User memilih layanan
+- User membuat pesanan
+- Sistem menyimpan order ke database
+- Mitra menerima pesanan masuk
+- Mitra melihat riwayat dan pendapatan
+- User melihat status, detail, dan hasil pembayaran
 
-## 🔐 Security Features
+## ERD Sederhana
 
-- CSRF Protection (enabled by default)
-- Input validation (Form Requests)
-- SQL Injection protection (Eloquent ORM)
-- XSS protection (Blade auto-escaping)
-- Authorization policies (Laravel Gates)
-- Secure password hashing
+Relasi utama di database:
 
-## 🧪 Testing
+```text
+users
+  ├─ hasMany -> orders
+  ├─ hasMany -> bank_accounts
+  ├─ hasMany -> identity_verifications
+  ├─ hasMany -> certificates
+  └─ hasMany -> portfolios
+
+services
+  ├─ belongsTo -> users
+  └─ hasMany -> orders
+
+orders
+  ├─ belongsTo -> users
+  ├─ belongsTo -> services
+  └─ hasOne -> earnings
+
+earnings
+  └─ belongsTo -> orders
+
+portfolio_images
+  └─ belongsTo -> portfolios
+```
+
+## Catatan Implementasi
+
+- Controller dibuat tipis dan fokus ke validasi, pemanggilan service, dan pengembalian view.
+- Query utama dipindah ke service dan repository.
+- Blade dipertahankan strukturnya agar desain tidak berubah.
+- Grafik dashboard mitra memakai data dari server sehingga lebih dinamis.
+
+## Pengujian
 
 ```bash
 php artisan test
 ```
 
-## 📖 Dokumentasi
+## Lisensi
 
-Lebih lengkap di [Laravel Documentation](https://laravel.com/docs)
-
-## 🔄 Migration dari kosera-mitra (PHP Native)
-
-Project ini adalah hasil migrasi dari custom PHP router ke **Laravel Framework**.
-
-**Perubahan Utama:**
-| Aspect | Sebelum (PHP) | Sesudah (Laravel) |
-|--------|---------------|------------------|
-| Router | Custom router | Laravel routing system |
-| Helpers | Manual PHP functions | Laravel helpers + Classes |
-| Views | Plain PHP | Blade templates |
-| Validation | Manual checks | Form Requests |
-| ORM | Manual SQL | Eloquent ORM |
-| Styling | Bootstrap | Tailwind CSS |
-
-**Kompatibilitas:**
-✅ Database schema tetap sama
-✅ Business logic dipertahankan
-✅ UI upgrade ke Tailwind CSS modern
-✅ Performance improvement dengan caching
-
-## 🤝 Kontribusi
-
-Silakan buat pull request atau report issues di repository.
-
-## 📄 License
-
-Licensed under the MIT License - lihat [LICENSE](LICENSE) file untuk detail.
-
----
-
-**Last Updated**: May 2026
-**Version**: 1.0.0 (Laravel Migration)
+MIT License.
