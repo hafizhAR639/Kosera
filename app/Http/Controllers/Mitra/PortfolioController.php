@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Mitra;
 
 use App\Http\Controllers\Controller;
 use App\Services\MitraService;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\Request;
+use App\Http\Requests\PortfolioRequest;
 use Illuminate\Support\Facades\Auth;
 
 class PortfolioController extends Controller
@@ -46,19 +45,9 @@ class PortfolioController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(PortfolioRequest $request)
     {
-        $validated = $request->validate([
-            'judul' => 'required|string|max:255',
-            'deskripsi' => 'nullable|string',
-            'kategori' => 'required|string|max:100',
-            'tanggal_project' => 'nullable|date',
-            'client_name' => 'nullable|string|max:100',
-            'lokasi' => 'nullable|string|max:100',
-            'nilai_project' => 'nullable|numeric',
-            'durasi_hari' => 'nullable|integer',
-            'foto_cover' => 'nullable|image|max:4096',
-        ]);
+        $validated = $request->validated();
 
         $userId = Auth::id() ?? 1;
         $this->mitraService->createPortfolioWithFile($userId, $validated, $request->file('foto_cover'));
@@ -77,22 +66,11 @@ class PortfolioController extends Controller
         ]);
     }
 
-    public function update(Request $request, string $id)
+    public function update(PortfolioRequest $request, string $id)
     {
         $userId = Auth::id() ?? 1;
         $portfolio = $this->mitraService->findPortfolioByUser($userId, (int) $id);
-
-        $validated = $request->validate([
-            'judul' => 'required|string|max:255',
-            'deskripsi' => 'nullable|string',
-            'kategori' => 'required|string|max:100',
-            'tanggal_project' => 'nullable|date',
-            'client_name' => 'nullable|string|max:100',
-            'lokasi' => 'nullable|string|max:100',
-            'nilai_project' => 'nullable|numeric',
-            'durasi_hari' => 'nullable|integer',
-            'foto_cover' => 'nullable|image|max:4096',
-        ]);
+        $validated = $request->validated();
 
         $this->mitraService->updatePortfolioWithFile($userId, (int) $id, $validated, $request->file('foto_cover'));
 

@@ -5,9 +5,10 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\AuthRegistrationService;
-use Illuminate\Http\Request;
+use App\Http\Requests\RegisterRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -26,12 +27,9 @@ class AuthController extends Controller
         return view('auth.register', ['title' => 'Register']);
     }
 
-    public function login(Request $request)
+    public function login(\App\Http\Requests\LoginRequest $request)
     {
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+        $credentials = $request->validated();
 
         if (Auth::attempt($credentials, $request->has('remember'))) {
             $request->session()->regenerate();
@@ -43,15 +41,9 @@ class AuthController extends Controller
         ]);
     }
 
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
-        $validated = $request->validate([
-            'nama' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:8|confirmed',
-            'phone' => 'nullable|string|max:20',
-            'location' => 'nullable|string|max:255',
-        ]);
+        $validated = $request->validated();
 
         $validated['password'] = Hash::make($validated['password']);
         $validated['join_date'] = now();
@@ -90,11 +82,18 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        $role = $request->user()?->role ?? null;
+
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/')
+        if ($role === 'mitra') {
+            return redirect()->route('admin.welcome')
+                ->with('success', 'Logout berhasil.');
+        }
+
+        return redirect()->route('welcome')
             ->with('success', 'Logout berhasil.');
     }
 }

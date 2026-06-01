@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Mitra;
 
 use App\Http\Controllers\Controller;
 use App\Services\MitraService;
+use App\Http\Requests\CertificateRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -47,16 +48,9 @@ class CertificateController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(CertificateRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'issued_by' => 'required|string|max:255',
-            'issued_date' => 'required|date',
-            'expiry_date' => 'nullable|date',
-            'certificate_number' => 'nullable|string|max:100',
-            'category' => 'required|in:teknis,keselamatan,manajemen,lainnya',
-        ]);
+        $validated = $request->validated();
 
         $userId = Auth::id() ?? 1;
         $validated['status_verifikasi'] = 'pending';
@@ -75,16 +69,9 @@ class CertificateController extends Controller
         return redirect()->route('mitra.certificates.index');
     }
 
-    public function update(Request $request, string $id)
+    public function update(CertificateRequest $request, string $id)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'issued_by' => 'required|string|max:255',
-            'issued_date' => 'required|date',
-            'expiry_date' => 'nullable|date',
-            'certificate_number' => 'nullable|string|max:100',
-            'category' => 'required|in:teknis,keselamatan,manajemen,lainnya',
-        ]);
+        $validated = $request->validated();
 
         $userId = Auth::id() ?? 1;
         $targetId = (int) ($request->input('id') ?: $id);

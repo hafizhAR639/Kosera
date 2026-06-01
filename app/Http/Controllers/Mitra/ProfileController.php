@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Mitra;
 
 use App\Http\Controllers\Controller;
 use App\Services\MitraService;
-use Illuminate\Http\Request;
+use App\Http\Requests\MitraProfileRequest;
 use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
@@ -33,21 +33,11 @@ class ProfileController extends Controller
         ]);
     }
 
-    public function update(Request $request)
+    public function update(MitraProfileRequest $request)
     {
         $userId = Auth::id() ?? 1;
 
-        $validated = $request->validate([
-            'nama' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:30',
-            'location' => 'nullable|string|max:255',
-            'bio' => 'nullable|string',
-            'avatar' => 'nullable|image|max:4096',
-            'nama_bank' => 'nullable|string|max:100',
-            'nama_rekening' => 'nullable|string|max:100|required_with:nama_bank,nomor_rekening',
-            'nomor_rekening' => 'nullable|string|max:50|required_with:nama_bank,nama_rekening',
-            'alamat_bank' => 'nullable|string|max:255',
-        ]);
+        $validated = $request->validated();
 
         $profilePayload = [
             'nama' => $validated['nama'],

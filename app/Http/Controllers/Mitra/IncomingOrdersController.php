@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Mitra;
 
 use App\Http\Controllers\Controller;
 use App\Services\MitraService;
-use Illuminate\Http\Request;
+use App\Http\Requests\IncomingOrderStatusRequest;
 use Illuminate\Support\Facades\Auth;
 
 class IncomingOrdersController extends Controller
@@ -27,7 +27,7 @@ class IncomingOrdersController extends Controller
         return view('mitra.orders_incoming', compact('orders', 'message'));
     }
 
-    public function updateStatus(Request $request)
+    public function updateStatus(IncomingOrderStatusRequest $request)
     {
         $orderId = (int) $request->input('order_id');
         $action = $request->input('action');
