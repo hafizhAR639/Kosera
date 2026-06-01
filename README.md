@@ -10,6 +10,16 @@ KOSERA adalah aplikasi marketplace jasa berbasis Laravel untuk mempertemukan use
 - Database: MySQL / MariaDB
 - Tooling: Composer, Node.js, npm
 
+## Refaktor Terkini
+
+- Status: mayoritas refaktor controller untuk area `Mitra` dan `User` telah selesai.
+- Apa yang sudah dilakukan: pemindahan validasi ke `FormRequest` (mis. `CertificateRequest`, `UserProfileRequest`, `ServiceRequest`, `LoginRequest`, dsb.), pemisahan logika bisnis ke service layer, dan view diperbaiki untuk generasi URL resource.
+- Pengujian: suite unit/feature dieksekusi secara lokal — `php artisan test` dilaporkan OK untuk tes yang ada setelah perubahan.
+- Catatan logout: perilaku logout kini mengarahkan `mitra` ke halaman welcome mitra (`/admin`) dan user ke halaman welcome user (`/`).
+- Branch/Commit: perubahan ini dicommit pada branch `refactor/migrate-mitra-to-eloquent` (contoh commit: "Fix: import Request and role-aware logout redirect in AuthController").
+- Lingkungan lokal: untuk pengecekan lokal pastikan `SESSION_DRIVER=file` jika tidak ingin tergantung koneksi DB untuk sesi saat pengujian.
+
+
 ## Fitur Utama
 
 - Dashboard user dan mitra
@@ -42,10 +52,8 @@ Folder legacy yang tidak dipakai sebagai jalur utama aplikasi Laravel sudah diha
 
 ## Kekurangan yang Masih Ada
 
-- Beberapa fitur masih bergantung pada struktur data dan pola lama yang perlu dirapikan bertahap.
-- Sebagian view masih memakai data mapping manual agar tetap kompatibel dengan Blade yang sudah ada.
-- Belum semua bagian memiliki pengujian fitur yang lengkap.
-- Beberapa dokumentasi lama di repo semula banyak dan berulang, sehingga sekarang disederhanakan menjadi satu README ini.
+- Cakupan pengujian fungsional/integrasi masih terbatas — rekomendasi: tambahkan tes end-to-end untuk upload file (avatar/portofolio/sertifikat), alur pembayaran, dan registrasi multi‑step mitra.
+- Dokumentasi lingkungan pengembangan perlu penambahan catatan praktis (mis. `SESSION_DRIVER=file` untuk pengujian lokal tanpa DB sessions, instruksi .env), serta pengayaan README jika diperlukan.
 
 ## Instalasi
 

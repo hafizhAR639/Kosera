@@ -103,6 +103,7 @@
 
         <form id="certForm" method="POST" action="{{ route('mitra.certificates.store') }}" enctype="multipart/form-data" class="space-y-4 p-5">
             @csrf
+            <input type="hidden" name="_method" id="certMethod" value="POST">
             <input type="hidden" name="id" id="certId">
 
             <div>
@@ -157,6 +158,7 @@
             document.getElementById('modalTitle').textContent = 'Tambah Sertifikat';
             document.getElementById('certForm').action = '{{ route("mitra.certificates.store") }}';
             document.getElementById('certForm').reset();
+            document.getElementById('certMethod').value = 'POST';
             document.getElementById('certId').value = '';
         }
     }
@@ -169,7 +171,8 @@
     function editCertificate(id) {
         openModal('edit');
         document.getElementById('modalTitle').textContent = 'Edit Sertifikat';
-        document.getElementById('certForm').action = '{{ route("mitra.certificates.update") }}';
+        document.getElementById('certForm').action = `{{ url('mitra/certificates') }}/${id}`;
+        document.getElementById('certMethod').value = 'PUT';
         document.getElementById('certId').value = id;
     }
 
@@ -178,8 +181,8 @@
 
         const form = document.createElement('form');
         form.method = 'POST';
-        form.action = '{{ route("mitra.certificates.delete") }}';
-        form.innerHTML = `<input type="hidden" name="id" value="${id}"><input type="hidden" name="_token" value="{{ csrf_token() }}">`;
+        form.action = `{{ url('mitra/certificates') }}/${id}`;
+        form.innerHTML = `<input type="hidden" name="_method" value="DELETE"><input type="hidden" name="id" value="${id}"><input type="hidden" name="_token" value="{{ csrf_token() }}">`;
         document.body.appendChild(form);
         form.submit();
     }

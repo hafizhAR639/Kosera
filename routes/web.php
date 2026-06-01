@@ -43,7 +43,45 @@ Route::get('/user', function () {
 })->name('user.home');
 
 Route::get('/user/dashboard', function () {
-    return view('user.dashboard');
+    $search = request()->query('search', '');
+    $category = request()->query('category', 'all');
+
+    $servicesQuery = Service::query()
+        ->where('status', 'active')
+        ->with(['user:id,nama,phone,location']);
+
+    if ($category !== 'all') {
+        $servicesQuery->where('kategori', $category);
+    }
+
+    if ($search !== '') {
+        $servicesQuery->where(function ($query) use ($search) {
+            $query->where('nama_layanan', 'like', "%{$search}%")
+                ->orWhere('deskripsi', 'like', "%{$search}%")
+                ->orWhereHas('user', function ($userQuery) use ($search) {
+                    $userQuery->where('nama', 'like', "%{$search}%");
+                });
+        });
+    }
+
+    $services = $servicesQuery
+        ->latest('views')
+        ->limit(9)
+        ->get();
+
+    $categories = Service::where('status', 'active')
+        ->select('kategori')
+        ->distinct()
+        ->pluck('kategori');
+
+    return view('user.dashboard', [
+        'services' => $services,
+        'categories' => $categories,
+        'filters' => [
+            'search' => $search,
+            'category' => $category,
+        ],
+    ]);
 })->name('user.dashboard');
 
 Route::get('/user/konfirmasi-pesanan', function () {

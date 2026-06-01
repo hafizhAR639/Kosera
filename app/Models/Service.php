@@ -43,4 +43,13 @@ class Service extends Model
     {
         return $this->hasMany(Order::class);
     }
+
+    /**
+     * Compatibility accessor for image URL used in views.
+     * Returns primary foto, fallback to foto_cover, else null.
+     */
+    public function getImageUrlAttribute(): ?string
+    {
+        return $this->foto ?? $this->foto_cover ?? null;
+    }
 }

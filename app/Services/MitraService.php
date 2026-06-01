@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Repositories\MitraRepository;
 use App\Models\Portfolio;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
 
 class MitraService
 {
@@ -232,5 +233,56 @@ class MitraService
     public function deleteService(int $mitraId, int $serviceId): bool
     {
         return $this->repo->deleteService($mitraId, $serviceId);
+    }
+
+    /**
+     * Create service and handle uploaded files (service photo and cover)
+     */
+    public function createServiceWithFiles(int $mitraId, array $payload, ?UploadedFile $foto = null, ?UploadedFile $foto_cover = null)
+    {
+        if ($foto) {
+            $path = $foto->store('services', 'public');
+            $payload['foto'] = '/storage/' . $path;
+        }
+
+        $portfolioImagePath = null;
+        if ($foto_cover) {
+            $path = $foto_cover->store('portfolio', 'public');
+            $portfolioImagePath = '/storage/' . $path;
+        }
+
+        return $this->createService($mitraId, $payload, $portfolioImagePath);
+    }
+
+    /**
+     * Update service and optionally replace service photo
+     */
+    public function updateServiceWithFiles(int $mitraId, int $serviceId, array $payload, ?UploadedFile $foto = null): bool
+    {
+        $service = $this->findServiceByUser($mitraId, $serviceId);
+        if ($foto) {
+            if (!empty($service->foto)) {
+                $prev = ltrim(str_replace('/storage/', '', $service->foto), '/');
+                try { Storage::disk('public')->delete($prev); } catch (\Throwable $e) {}
+            }
+            $path = $foto->store('services', 'public');
+            $payload['foto'] = '/storage/' . $path;
+        }
+
+        return $this->updateService($mitraId, $serviceId, $payload);
+    }
+
+    /**
+     * Delete service and remove stored files
+     */
+    public function deleteServiceWithFiles(int $mitraId, int $serviceId): bool
+    {
+        $service = $this->findServiceByUser($mitraId, $serviceId);
+        if (!empty($service->foto)) {
+            $prev = ltrim(str_replace('/storage/', '', $service->foto), '/');
+            try { Storage::disk('public')->delete($prev); } catch (\Throwable $e) {}
+        }
+
+        return $this->deleteService($mitraId, $serviceId);
     }
 }

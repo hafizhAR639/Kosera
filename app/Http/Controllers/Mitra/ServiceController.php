@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Mitra;
 
 use App\Http\Controllers\Controller;
 use App\Services\MitraService;
+use App\Http\Requests\ServiceRequest;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ServiceController extends Controller
@@ -46,42 +46,18 @@ class ServiceController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(ServiceRequest $request)
     {
-        $validated = $request->validate([
-            'nama_layanan' => 'required|string|max:255',
-            'kategori' => 'required|string|max:100',
-            'deskripsi' => 'nullable|string',
-            'harga_mulai' => 'nullable|numeric',
-            'harga_max' => 'nullable|numeric',
-            'satuan' => 'nullable|string|max:50',
-            'durasi_estimasi' => 'nullable|string|max:100',
-            'area_layanan' => 'nullable|string',
-            'foto' => 'nullable|image|min:2048|max:4096',
-            'foto_cover' => 'nullable|image|min:2048|max:4096',
-            'status' => 'nullable|in:active,inactive',
-        ], [
-            'foto.min' => 'Ukuran foto minimal 2 MB',
-            'foto.max' => 'Ukuran foto maksimal 4 MB',
-            'foto_cover.min' => 'Ukuran foto cover minimal 2 MB',
-            'foto_cover.max' => 'Ukuran foto cover maksimal 4 MB',
-        ]);
-
-        // handle foto upload
-        if ($request->hasFile('foto')) {
-            $path = $request->file('foto')->store('services', 'public');
-            $validated['foto'] = '/storage/' . $path;
-        }
-
-        $portfolioImagePath = null;
-        if ($request->hasFile('foto_cover')) {
-            $path = $request->file('foto_cover')->store('portfolio', 'public');
-            $portfolioImagePath = '/storage/' . $path;
-        }
+        $validated = $request->validated();
 
         $validated['status'] = $validated['status'] ?? 'active';
 
-        $service = $this->mitraService->createService(Auth::id() ?? 1, $validated, $portfolioImagePath);
+        $service = $this->mitraService->createServiceWithFiles(
+            Auth::id() ?? 1,
+            $validated,
+            $request->file('foto') ?? null,
+            $request->file('foto_cover') ?? null
+        );
 
         return redirect()->route('mitra.layanan.index')
             ->with('success', 'Layanan berhasil ditambahkan!');
@@ -97,40 +73,13 @@ class ServiceController extends Controller
         ]);
     }
 
-    public function update(Request $request, string $id)
+    public function update(ServiceRequest $request, string $id)
     {
         $userId = Auth::id() ?? 1;
         $service = $this->mitraService->findServiceByUser($userId, (int) $id);
+        $validated = $request->validated();
 
-        $validated = $request->validate([
-            'nama_layanan' => 'required|string|max:255',
-            'kategori' => 'required|string|max:100',
-            'deskripsi' => 'nullable|string',
-            'harga_mulai' => 'nullable|numeric',
-            'harga_max' => 'nullable|numeric',
-            'satuan' => 'nullable|string|max:50',
-            'durasi_estimasi' => 'nullable|string|max:100',
-            'area_layanan' => 'nullable|string',
-            'foto' => 'nullable|image|min:2048|max:4096',
-            'status' => 'nullable|in:active,inactive',
-        ], [
-            'foto.min' => 'Ukuran foto minimal 2 MB',
-            'foto.max' => 'Ukuran foto maksimal 4 MB',
-        ]);
-
-        // handle foto upload and delete previous if present
-        if ($request->hasFile('foto')) {
-            // delete previous file from storage if exists
-            if (!empty($service->foto)) {
-                $prev = ltrim(str_replace('/storage/', '', $service->foto), '/');
-                Storage::disk('public')->delete($prev);
-            }
-
-            $path = $request->file('foto')->store('services', 'public');
-            $validated['foto'] = '/storage/' . $path;
-        }
-
-        $this->mitraService->updateService($userId, (int) $id, $validated);
+        $this->mitraService->updateServiceWithFiles($userId, (int) $id, $validated, $request->file('foto') ?? null);
 
         return redirect()->route('mitra.layanan.index')
             ->with('success', 'Layanan berhasil diperbarui!');
@@ -140,13 +89,7 @@ class ServiceController extends Controller
     {
         $service = $this->mitraService->findServiceByUser(Auth::id() ?? 1, (int) $id);
 
-        // delete foto if exists
-        if (!empty($service->foto)) {
-            $path = ltrim(str_replace('/storage/', '', $service->foto), '/');
-            Storage::disk('public')->delete($path);
-        }
-
-        $this->mitraService->deleteService(Auth::id() ?? 1, (int) $id);
+        $this->mitraService->deleteServiceWithFiles(Auth::id() ?? 1, (int) $id);
 
         return redirect()->route('mitra.layanan.index')
             ->with('success', 'Layanan berhasil dihapus!');

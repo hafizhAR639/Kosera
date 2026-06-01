@@ -118,4 +118,17 @@ class User extends Authenticatable
     {
         return $this->hasMany(IdentityVerification::class);
     }
+
+    /**
+     * Compatibility accessor for avatar used in views.
+     * Returns avatar URL or a placeholder if empty.
+     */
+    public function getAvatarAttribute(?string $value): ?string
+    {
+        if (!empty($value)) {
+            return $value;
+        }
+
+        return 'https://via.placeholder.com/150?text=Avatar';
+    }
 }

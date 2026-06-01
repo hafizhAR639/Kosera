@@ -7,13 +7,9 @@ use Illuminate\Http\Request;
 
 class RatingController extends Controller
 {
-    public function store(Request $request)
+    public function store(\App\Http\Requests\RatingRequest $request)
     {
-        $validated = $request->validate([
-            'order_id' => 'required|string',
-            'rating' => 'required|integer|min:1|max:5',
-            'comment' => 'nullable|string|max:1000',
-        ]);
+        $validated = $request->validated();
 
         session()->push('ratings', $validated);
 

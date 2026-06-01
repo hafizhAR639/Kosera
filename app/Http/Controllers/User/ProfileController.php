@@ -4,7 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Services\UserProfileService;
-use Illuminate\Http\Request;
+use App\Http\Requests\UserProfileRequest;
 use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
@@ -23,19 +23,14 @@ class ProfileController extends Controller
         return view('user.profile_edit', ['user' => $user]);
     }
 
-    public function update(Request $request)
+    public function update(UserProfileRequest $request)
     {
         $user = $this->profileService->getUserWithFallback(Auth::id(), 1);
         if (! $user) {
             return redirect()->route('user.dashboard');
         }
 
-        $validated = $request->validate([
-            'nama' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:30',
-            'location' => 'nullable|string|max:255',
-            'address' => 'nullable|string|max:500',
-        ]);
+        $validated = $request->validated();
 
         $this->profileService->updateProfile($user, [
             'nama' => $validated['nama'],
