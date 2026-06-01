@@ -1,0 +1,32 @@
+/* Import Font dan Ikon secara lokal (tanpa CDN) */
+@import '@fontsource/nunito';
+@import '@fontsource/plus-jakarta-sans';
+@import '@tabler/icons-webfont/dist/tabler-icons.min.css';
+
+/* Directive Tailwind */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom CSS menggunakan @layer components agar bisa menggunakan @apply */
+@layer components {
+	.sidebar-link { @apply flex items-center gap-3 px-4 py-2.5 rounded-xl cursor-pointer transition-all duration-200; color: #155c87; font-weight: 600; }
+	.sidebar-link:hover { background: #e8f4fb; color: #0f4366; }
+	.sidebar-link.active { background: #155c87; color: #ffffff; }
+
+	.badge { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs tracking-wide uppercase; font-weight: 700; }
+	.badge-kebersihan { background: #e8f8f0; color: #0f7a45; }
+	.badge-archives   { background: #fff8e1; color: #a07000; }
+	.badge-reports    { background: #e8f0fb; color: #1a4fa0; }
+	.badge-makanan    { background: #fde8e8; color: #a02020; }
+	.badge-elektronik { background: #f0e8fb; color: #6020a0; }
+
+	.action-btn { @apply inline-flex items-center gap-1 text-sm cursor-pointer transition-colors duration-150 px-1; font-weight: 600; }
+	.btn-detail  { color: #1a6fa0; }
+	.btn-detail:hover { color: #0f4366; }
+	.btn-edit    { @apply text-amber-500 hover:text-amber-700; }
+	.btn-hapus   { @apply text-red-500 hover:text-red-700; }
+
+	.table-row { @apply border-b border-slate-100 last:border-0; }
+	tr.table-row:hover td { background: #f0f7fd; transition: background .15s; }
+}
