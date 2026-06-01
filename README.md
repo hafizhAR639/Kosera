@@ -52,8 +52,6 @@ Folder legacy yang tidak dipakai sebagai jalur utama aplikasi Laravel sudah diha
 
 ## Kekurangan yang Masih Ada
 
-- Mayoritas controller telah direfaktor ke `FormRequest` dan service layer, namun beberapa endpoint dan komponen lama masih menggunakan pola warisan dan butuh peninjauan.
-- Beberapa view masih memakai data mapping manual untuk kompatibilitas; idealnya komponen view disesuaikan agar konsisten dengan struktur data baru.
 - Cakupan pengujian fungsional/integrasi masih terbatas — rekomendasi: tambahkan tes end-to-end untuk upload file (avatar/portofolio/sertifikat), alur pembayaran, dan registrasi multi‑step mitra.
 - Dokumentasi lingkungan pengembangan perlu penambahan catatan praktis (mis. `SESSION_DRIVER=file` untuk pengujian lokal tanpa DB sessions, instruksi .env), serta pengayaan README jika diperlukan.
 
