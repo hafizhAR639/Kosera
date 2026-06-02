@@ -37,7 +37,7 @@
         @forelse ($portfolios as $item)
             <article class="overflow-hidden rounded-[28px] bg-white shadow-[0_12px_34px_rgba(0,0,0,0.08)] transition-transform hover:-translate-y-0.5">
                 @if($item->foto_cover)
-                    <img src="{{ asset('storage/' . $item->foto_cover) }}" alt="cover" class="h-40 w-full object-cover" />
+                    <img src="{{ $item->foto_cover }}" alt="cover" class="h-40 w-full object-cover" />
                 @else
                     <div class="h-40 bg-gradient-to-br from-[#e1f0ff] via-[#d7ebfb] to-[#cde5ff]"></div>
                 @endif
