@@ -10,6 +10,14 @@
             </a>
         </div>
 
+        <form method="POST" action="{{ route('user.orders.store') }}">
+            @csrf
+            <input type="hidden" name="service_id" value="{{ request('service_id', 3) }}">
+            <input type="hidden" name="customer_name" value="{{ auth()->user()->nama ?? 'Customer Kosera' }}">
+            <input type="hidden" name="customer_phone" value="{{ auth()->user()->phone ?? '-' }}">
+            <input type="hidden" name="customer_email" value="{{ auth()->user()->email ?? 'test@kosera.com' }}">
+            <input type="hidden" name="alamat_lengkap" value="{{ auth()->user()->location ?? 'Alamat Default' }}">
+
         <div class="grid grid-cols-12 gap-8">
             <!-- Left Column -->
             <div class="col-span-12 space-y-6 lg:col-span-8">
@@ -91,9 +99,9 @@
                             </div>
                         </div>
 
-                        <a href="{{ route('user.payment.success') }}" class="mb-6 block w-full rounded-lg bg-[#0073a5] py-4 text-center font-bold text-white shadow-lg shadow-[#0073a5]/20 transition-colors hover:bg-[#005b85] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005981]">
+                        <button type="submit" class="mb-6 block w-full rounded-lg bg-[#0073a5] py-4 text-center font-bold text-white shadow-lg shadow-[#0073a5]/20 transition-colors hover:bg-[#005b85]">
                             Pesan Sekarang
-                        </a>
+                        </button>
 
                         <div class="flex items-center justify-center gap-2 text-center text-xs font-medium text-slate-400">
                             <svg class="h-4 w-4 text-[#0073a5]" fill="currentColor" viewBox="0 0 20 20"><path clip-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0110 1.944 11.954 11.954 0 0117.834 5c.11.65.166 1.32.166 2.001 0 4.946-2.597 9.281-6.505 11.751a.75.75 0 01-.83 0C6.763 16.282 4.166 11.947 4.166 7.001c0-.68.056-1.35.166-2.002zm10.58 4.47a.75.75 0 00-1.06-1.06L9 11.19 7.314 9.504a.75.75 0 00-1.06 1.06l2.217 2.217a.75.75 0 001.06 0l3.215-3.215z" fill-rule="evenodd"></path></svg>
@@ -102,6 +110,6 @@
                     </section>
                 </div>
             </div>
-        </div>
-    </div>
+        </div> 
+    </form></div>
 </x-layout.user-sidebar>

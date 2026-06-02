@@ -84,9 +84,9 @@ Route::get('/user/dashboard', function () {
     ]);
 })->name('user.dashboard');
 
-Route::get('/user/konfirmasi-pesanan', function () {
-    return view('user.konfirmasi-pesanan');
-})->name('user.order.confirm');
+//Route::get('/user/konfirmasi-pesanan', function () {
+   // return view('user.konfirmasi-pesanan');
+//})->name('user.order.confirm');
 
 Route::get('/user/pembayaran-berhasil', function () {
     return app(PaymentController::class)->success();
@@ -159,8 +159,8 @@ Route::prefix('user')->name('user.')->group(function () {
     // Orders - history, detail, create, store, cancel
     Route::get('/riwayat', [UserOrderController::class, 'history'])->name('orders.history');
     Route::get('/detail-pesanan/{order?}', [UserOrderController::class, 'detail'])->name('orders.detail');
-    Route::get('/orders/{order}', [UserOrderController::class, 'show'])->name('orders.show');
     Route::get('/orders/create', [UserOrderController::class, 'create'])->name('orders.create');
+    Route::get('/orders/{order}', [UserOrderController::class, 'show'])->name('orders.show');
     Route::post('/orders', [UserOrderController::class, 'store'])->name('orders.store');
     Route::post('/orders/{order}/cancel', [UserOrderController::class, 'cancel'])->name('orders.cancel');
     

@@ -79,12 +79,12 @@
             </div>
 
             <div class="grid gap-4 md:grid-cols-2">
-                <a href="{{ route('user.order.confirm') }}" class="rounded-2xl border border-[#bfc7d0]/20 p-4 transition-colors hover:border-[#006b9b]/40 hover:bg-[#f4faff]">
+                <a href="#" class="rounded-2xl border border-[#bfc7d0]/20 p-4 transition-colors hover:border-[#006b9b]/40 hover:bg-[#f4faff]">
                     <p class="text-xs font-bold uppercase tracking-wide text-[#006b9b]">Pilihan Populer</p>
                     <h3 class="mt-2 text-lg font-bold text-[#141d21]">Bersih Cepat Mingguan</h3>
                     <p class="mt-1 text-sm text-[#40484f]">Cocok untuk kamar kos dan apartemen kecil.</p>
                 </a>
-                <a href="{{ route('user.order.confirm') }}" class="rounded-2xl border border-[#bfc7d0]/20 p-4 transition-colors hover:border-[#006b9b]/40 hover:bg-[#f4faff]">
+                <a href="#" class="rounded-2xl border border-[#bfc7d0]/20 p-4 transition-colors hover:border-[#006b9b]/40 hover:bg-[#f4faff]">
                     <p class="text-xs font-bold uppercase tracking-wide text-[#006b9b]">Butuh Cepat</p>
                     <h3 class="mt-2 text-lg font-bold text-[#141d21]">Servis AC Darurat</h3>
                     <p class="mt-1 text-sm text-[#40484f]">Mitra siap datang ke lokasi hari ini.</p>

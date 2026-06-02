@@ -62,12 +62,16 @@ class OrderController extends Controller
      * Create new order (redirect to confirmation)
      * Validate service exists, then redirect
      */
+    // KODE BARU (Langsung mengirim data ke halaman Blade)
     public function create(Request $request)
     {
         $serviceId = $request->query('service_id');
-        $this->orderService->ensureServiceExists((int) $serviceId);
+        
+        // 1. Ambil data layanan asli dari database berdasarkan ID yang diklik
+        $service = \App\Models\Service::findOrFail($serviceId);
 
-        return redirect()->route('user.order.confirm', ['service_id' => $serviceId]);
+        // 2. Langsung tampilkan halamannya dan kirimkan datanya (tanpa redirect)
+        return view('user.konfirmasi-pesanan', compact('service'));
     }
 
     /**
@@ -82,8 +86,8 @@ class OrderController extends Controller
 
         $order = $this->orderService->createOrder($userId, $validated);
 
-        return redirect()->route('user.order.confirm', ['order_id' => $order->id])
-            ->with('success', 'Pesanan berhasil dibuat! Lanjutkan ke pembayaran.');
+        return redirect()->route('user.orders.history')
+            ->with('success', 'Pesanan berhasil dibuat!');
     }
 
     /**
