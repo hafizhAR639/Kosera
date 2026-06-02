@@ -27,8 +27,8 @@
                     <div class="flex-1">
                         <div class="mb-2 flex items-start justify-between gap-2">
                             <div>
-                                <h3 class="text-xl font-bold text-slate-800">Laundry Kiloan Premium</h3>
-                                <p class="font-semibold text-[#0073a5]">Clean &amp; Fresh Solo</p>
+                                <h3 class="text-xl font-bold text-slate-800">{{ $service->nama_layanan }}</h3>
+                                <p class="font-semibold text-[#0073a5]">{{ $service->user->nama ?? 'Mitra KOSERA' }}</p>
                             </div>
                             <span class="rounded-full bg-[#e0f2fe] px-3 py-1 text-xs font-bold uppercase text-[#0073a5]">Premium</span>
                         </div>
@@ -39,7 +39,7 @@
                             </div>
                             <div class="flex items-center gap-2">
                                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
-                                <span>Rp 12.000 / Kg</span>
+                                <span>Rp {{ number_format($service->harga_mulai, 0) }} / {{ $service->satuan }}</span>
                             </div>
                         </div>
                     </div>
@@ -80,7 +80,7 @@
                         <div class="mb-8 space-y-4">
                             <div class="flex justify-between text-slate-600">
                                 <span>Harga Layanan (Min. 3kg)</span>
-                                <span class="font-medium text-slate-800">Rp 36.000</span>
+                                <span class="font-medium text-slate-800">Rp {{ number_format($service->harga_mulai, 0) }}</span>
                             </div>
                             <div class="flex justify-between text-slate-600">
                                 <span>Biaya Layanan Aplikasi</span>

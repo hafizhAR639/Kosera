@@ -115,7 +115,7 @@
             <p class="text-[15px] leading-relaxed text-[#6B7280]">Silakan pilih alasan penolakan untuk membantu kami meningkatkan layanan.</p>
         </section>
 
-        <form id="rejectForm" method="POST" class="space-y-3">
+        <form id="rejectForm" method="POST" action="{{ route('mitra.orders.incoming.status') }}" class="space-y-3">
             @csrf
             <input type="hidden" name="action" value="reject">
             <input type="hidden" name="order_id" id="rejectOrderId" value="">
