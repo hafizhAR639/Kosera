@@ -69,9 +69,10 @@ class OrderController extends Controller
         
         // 1. Ambil data layanan asli dari database berdasarkan ID yang diklik
         $service = \App\Models\Service::findOrFail($serviceId);
-
+        // Ambil data user yang sedang login (dengan fallback ke User ID 1 agar aman)
+        $user = \App\Models\User::find(auth()->id()) ?? \App\Models\User::find(1);
         // 2. Langsung tampilkan halamannya dan kirimkan datanya (tanpa redirect)
-        return view('user.konfirmasi-pesanan', compact('service'));
+        return view('user.konfirmasi-pesanan', compact('service', 'user'));
     }
 
     /**

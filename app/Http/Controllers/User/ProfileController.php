@@ -32,11 +32,15 @@ class ProfileController extends Controller
 
         $validated = $request->validated();
 
+        $fullLocation = $validated['location'] ?? '';
+        if (!empty($validated['address'])) {
+            $fullLocation .= ' - ' . $validated['address'];
+        }
+
         $this->profileService->updateProfile($user, [
             'nama' => $validated['nama'],
             'phone' => $validated['phone'] ?? null,
-            'location' => $validated['location'] ?? null,
-            'address' => $validated['address'] ?? null,
+            'location' => $fullLocation,
         ]);
 
         return redirect()->route('user.profile.show')

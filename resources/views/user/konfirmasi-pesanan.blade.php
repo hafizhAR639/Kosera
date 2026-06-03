@@ -12,11 +12,12 @@
 
         <form method="POST" action="{{ route('user.orders.store') }}">
             @csrf
-            <input type="hidden" name="service_id" value="{{ request('service_id', 3) }}">
-            <input type="hidden" name="customer_name" value="{{ auth()->user()->nama ?? 'Customer Kosera' }}">
-            <input type="hidden" name="customer_phone" value="{{ auth()->user()->phone ?? '-' }}">
-            <input type="hidden" name="customer_email" value="{{ auth()->user()->email ?? 'test@kosera.com' }}">
-            <input type="hidden" name="alamat_lengkap" value="{{ auth()->user()->location ?? 'Alamat Default' }}">
+            <input type="hidden" name="service_id" value="{{ $service->id }}">
+            
+            <input type="hidden" name="customer_name" value="{{ $user->nama }}">
+            <input type="hidden" name="customer_phone" value="{{ $user->phone }}">
+            <input type="hidden" name="customer_email" value="{{ $user->email }}">
+            <input type="hidden" name="alamat_lengkap" value="{{ $user->location }}">
 
         <div class="grid grid-cols-12 gap-8">
             <!-- Left Column -->
@@ -55,8 +56,8 @@
                         <button type="button" class="text-sm font-semibold text-[#0073a5] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#005981]">Ubah Alamat</button>
                     </div>
                     <div class="rounded-lg border border-slate-100 bg-slate-50 p-4">
-                        <p class="mb-1 font-bold text-slate-700">Kos Mahasiswa Sejahtera (Kamar 204)</p>
-                        <p class="text-sm leading-relaxed text-slate-500">Jl. Ir. Sutami No. 36, Jebres, Kota Surakarta, Jawa Tengah 57126</p>
+                        <p class="mb-1 font-bold text-slate-700">{{ $user->nama ?? 'Nama Belum Diatur' }}</p>
+                        <p class="text-sm leading-relaxed text-slate-500">{{ $user->location ?? 'Alamat belum diatur. Silakan perbarui profil Anda.' }}</p>
                     </div>
                 </section>
 

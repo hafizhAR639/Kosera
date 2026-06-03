@@ -14,7 +14,7 @@
                         <path d="M12 12a4 4 0 100-8 4 4 0 000 8zm0 2c-3.33 0-6 2.015-6 4.5V20h12v-1.5c0-2.485-2.67-4.5-6-4.5z"/>
                     </svg>
                 </div>
-                <h2 class="text-xl font-bold text-[#005981]">{{ auth()->user()->name ?? 'User' }}</h2>
+                <h2 class="text-xl font-bold text-[#005981]">{{ auth()->user()->nama ?? 'User' }}</h2>
                 <p class="text-sm text-[#40484f] mt-1">Kosera Member</p>
             </div>
 
@@ -27,19 +27,19 @@
                 <div class="grid grid-cols-2 gap-6">
                     <div>
                         <p class="text-xs uppercase text-[#40484f] font-semibold mb-1">Nama</p>
-                        <p class="text-base font-semibold text-[#005981]">{{ auth()->user()->name ?? '-' }}</p>
+                        <p class="text-base font-semibold text-[#005981]">{{ $user->nama ?? '-' }}</p>
                     </div>
                     <div>
                         <p class="text-xs uppercase text-[#40484f] font-semibold mb-1">Email</p>
-                        <p class="text-base font-semibold text-[#005981]">{{ auth()->user()->email ?? '-' }}</p>
+                        <p class="text-base font-semibold text-[#005981]">{{ $user->email ?? '-' }}</p>
                     </div>
                     <div>
                         <p class="text-xs uppercase text-[#40484f] font-semibold mb-1">Telepon</p>
-                        <p class="text-base font-semibold text-[#005981]">{{ auth()->user()->phone ?? '-' }}</p>
+                        <p class="text-base font-semibold text-[#005981]">{{ $user->phone ?? '-' }}</p>
                     </div>
                     <div>
                         <p class="text-xs uppercase text-[#40484f] font-semibold mb-1">Lokasi</p>
-                        <p class="text-base font-semibold text-[#005981]">{{ auth()->user()->location ?? '-' }}</p>
+                        <p class="text-base font-semibold text-[#005981]">{{ $user->location ?? '-' }}</p>
                     </div>
                 </div>
             </div>
@@ -55,7 +55,7 @@
             </div>
             <div class="border-2 border-[#9bcefe]/20 rounded-lg p-6">
                 <p class="text-[#005981] font-semibold mb-2">Alamat Utama</p>
-                <p class="text-[#40484f] text-sm leading-relaxed">{{ auth()->user()->address ?? 'Belum ada alamat' }}</p>
+                <p class="text-[#40484f] text-sm leading-relaxed">{{ $user->location ?? 'Belum ada alamat' }}</p>
             </div>
         </div>
 </x-layout.user-sidebar>
