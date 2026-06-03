@@ -39,8 +39,14 @@ class OrderController extends Controller
     {
         $userId = Auth::id() ?? session('user_id', 1);
         $order = $this->orderService->getOrderDetail($userId, $orderId);
+        // TAMBAHKAN BARIS INI: Ambil data user yang sedang login
+        $user = \App\Models\User::find($userId);
 
-        return view('user.orders.show', ['order' => $order]);
+        // UBAH BARIS INI: Kirimkan juga variabel 'user' ke view
+        return view('user.orders.show', [
+            'order' => $order, 
+            'user' => $user
+        ]);
     }
 
     /**
@@ -55,7 +61,14 @@ class OrderController extends Controller
             ? $this->orderService->getOrderDetail($userId, $orderId)
             : $this->orderService->getLatestOrderForUser($userId);
 
-        return view('user.detail-pesanan', ['order' => $order]);
+        // TAMBAHKAN BARIS INI: Ambil data user yang sedang login
+        $user = \App\Models\User::find($userId);
+
+        // UBAH BARIS INI: Kirimkan juga variabel 'user' ke view
+        return view('user.detail-pesanan', [
+            'order' => $order,
+            'user' => $user
+        ]);
     }
 
     /**

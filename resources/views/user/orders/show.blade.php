@@ -56,7 +56,7 @@
                         </div>
                         <div>
                             <p class="text-xs text-slate-500 uppercase font-bold tracking-wide mb-2">Durasi Estimasi</p>
-                            <p class="text-lg font-semibold text-slate-900">{{ $order->service->durasi_estimasi }}</p>
+                            <p class="text-lg font-semibold text-slate-900">{{ $order->service->durasi_estimasi ?? '120' }}</p>
                         </div>
                     </div>
                 </div>
