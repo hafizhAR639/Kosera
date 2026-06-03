@@ -23,7 +23,7 @@
             <div class="col-span-12 space-y-6 lg:col-span-8">
                 <!-- Service Info -->
                 <section class="flex items-start gap-5 rounded-lg border border-slate-100 bg-white p-6 shadow-sm">
-                    <img alt="Laundry" class="h-24 w-24 flex-shrink-0 rounded-lg object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA55lmZx1rOqvCJnCVRWHxO9PlULNLxat34QuynfD7yEA2C_us0PfYgOyOGsxQjYk6gB69TcHCJUKIC8UrUwuZn6ixP7UgFizkqMvUugSOBmQ3_hnG1RqiZTZk8qrmo54T0pb2bEWUfmeD1kRtKG4ti0aTn5CEEHunLPEFFakbXiUku-sNp1HDSQkbzlelB1MxtVsA-ZCm6BobmnLdl2E0PktTshjuua-YkQss6cKGweEjIxnog-s95M4_nfBz9EerLGOqXXyBdJ0w" />
+                    <img alt="{{ $service->nama_layanan }}" class="h-24 w-24 flex-shrink-0 rounded-lg object-cover" src="{{ asset($service->foto) }}" onerror="this.src='https://placehold.co/150?text=No+Image'" />
                     <div class="flex-1">
                         <div class="mb-2 flex items-start justify-between gap-2">
                             <div>
