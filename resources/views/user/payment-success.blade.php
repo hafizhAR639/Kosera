@@ -60,10 +60,19 @@
         </div>
 
         <!-- Back Button -->
-        <div class="mb-8">
-            <a href="{{ route('user.dashboard') }}" class="flex w-full items-center justify-center gap-2 rounded-xl border border-sky-300 bg-[#dcf2fb] py-4 font-bold text-[#0073a5] transition-colors hover:bg-sky-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0073a5]">
-                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
-                <span>Kembali ke Dashboard</span>
+        <div class="mb-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <a href="{{ route('user.orders.history') }}" class="flex items-center justify-center gap-2 rounded-xl bg-[#0073a5] py-4 font-bold text-white transition-colors hover:bg-[#005a82] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0073a5]">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+                <span>Lihat Riwayat Pesanan</span>
+            </a>
+
+            <a href="#" class="flex items-center justify-center gap-2 rounded-xl border border-sky-300 bg-[#dcf2fb] py-4 font-bold text-[#0073a5] transition-colors hover:bg-sky-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0073a5]">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                    <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+                <span>Ke Profil Pengguna</span>
             </a>
         </div>
 

@@ -86,7 +86,7 @@ class OrderController extends Controller
 
         $order = $this->orderService->createOrder($userId, $validated);
 
-        return redirect()->route('user.orders.history')
+        return redirect()->route('user.payment.success')
             ->with('success', 'Pesanan berhasil dibuat!');
     }
 
