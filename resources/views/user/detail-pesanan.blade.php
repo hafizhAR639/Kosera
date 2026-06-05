@@ -2,7 +2,7 @@
     $pageTitle = 'Detail Pesanan #' . $order->order_code . ' - KOSERA';
 
     $status = $order->status ?? 'pending';
-    $isPaid = data_get($order, 'payment_status') === 'paid' || in_array($status, ['processing', 'completed'], true);
+    $isPaid = in_array($status, ['pending', 'processing', 'completed']);
     $isProcessing = in_array($status, ['processing', 'completed'], true);
     $isCompleted = $status === 'completed';
 
@@ -86,7 +86,7 @@
                             <p class="mt-1 text-sm text-slate-500">{{ $order->service->kategori ?? 'Kategori tidak tersedia' }}</p>
                             <div class="mt-4 flex items-center justify-between gap-3">
                                 <span class="text-sm text-slate-500">Estimasi</span>
-                                <span class="font-semibold text-slate-800">{{ $order->service->durasi_estimasi ?? '-' }}</span>
+                                <span class="font-semibold text-slate-800">{{ $order->service->durasi_estimasi ?? '24 Jam' }}</span>
                             </div>
                         </div>
 
@@ -189,7 +189,7 @@
                     <div class="mt-5 space-y-3 text-sm">
                         <div class="flex items-center justify-between gap-3 rounded-2xl bg-slate-50 px-4 py-3">
                             <span class="text-slate-500">Telepon</span>
-                            <a href="tel:{{ data_get($order, 'service.user.phone') }}" class="font-semibold text-[#0073a5]">{{ data_get($order, 'service.user.phone', '-') }}</a>
+                            <a href="tel:{{ data_get($order, 'service.user.phone') }}" class="font-semibold text-[#0073a5]">{{ $order->service->user->phone ?? 'Belum ada nomor' }}</a>
                         </div>
                         <div class="rounded-2xl border border-sky-100 bg-sky-50 px-4 py-4 text-sm leading-relaxed text-sky-900">
                             Tim mitra akan memproses pesanan sesuai status terakhir di atas.
