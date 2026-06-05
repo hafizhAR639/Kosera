@@ -18,6 +18,7 @@
             <input type="hidden" name="customer_phone" value="{{ $user->phone }}">
             <input type="hidden" name="customer_email" value="{{ $user->email }}">
             <input type="hidden" name="alamat_lengkap" value="{{ $user->location }}">
+            <input type="hidden" name="total_harga" value="{{ $service->harga_mulai + 2000 }}">
 
         <div class="grid grid-cols-12 gap-8">
             <!-- Left Column -->
@@ -96,7 +97,7 @@
                         <div class="mb-8 border-t border-dashed border-slate-200 pt-6">
                             <div class="flex items-center justify-between">
                                 <span class="font-bold text-slate-800">Total</span>
-                                <span class="text-2xl font-extrabold text-[#0073a5]">Rp 38.000</span>
+                                <span class="text-2xl font-extrabold text-[#0073a5]">Rp {{ number_format($service->harga_mulai + 2000, 0, ',', '.') }}</span>
                             </div>
                         </div>
 

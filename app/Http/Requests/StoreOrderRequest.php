@@ -20,6 +20,7 @@ class StoreOrderRequest extends FormRequest
             'customer_email' => 'required|email',
             'alamat_lengkap' => 'required|string',
             'catatan_customer' => 'nullable|string|max:1000',
+            'total_harga' => 'required|numeric',
         ];
     }
 

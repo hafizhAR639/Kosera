@@ -67,7 +67,7 @@ class OrderService
             'alamat_lengkap' => $validated['alamat_lengkap'],
             'catatan_customer' => $validated['catatan_customer'] ?? null,
             'tanggal_order' => now(),
-            'total_harga' => $service->harga_mulai,
+            'total_harga' => $validated['total_harga'],
             'status' => 'pending',
             'payment_status' => 'unpaid',
         ]);
