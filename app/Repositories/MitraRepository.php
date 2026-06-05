@@ -81,7 +81,7 @@ class MitraRepository
             $labels[] = $date->format('M');
 
             $sum = Earning::where('user_id', $mitraId)
-                ->where('status', 'paid')
+                ->where('status', ['pending','paid'])
                 ->whereMonth('created_at', $date->month)
                 ->whereYear('created_at', $date->year)
                 ->sum('jumlah');

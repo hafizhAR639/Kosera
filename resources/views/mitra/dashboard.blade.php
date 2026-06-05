@@ -200,7 +200,14 @@ $statusText = [
                     y: {
                         beginAtZero: true,
                         ticks: {
-                            callback: (value) => 'Rp ' + (Number(value) / 1000) + 'k',
+                            // UBAH BAGIAN INI
+                            callback: function(value) {
+                                return new Intl.NumberFormat('id-ID', { 
+                                    style: 'currency', 
+                                    currency: 'IDR',
+                                    minimumFractionDigits: 0
+                                }).format(value);
+                            }
                         },
                     },
                     x: {
