@@ -37,14 +37,39 @@
             $statusText = ['pending' => 'Pending', 'confirmed' => 'Dikonfirmasi', 'in_progress' => 'Dikerjakan', 'completed' => 'Selesai', 'cancelled' => 'Dibatalkan'];
             $statusColor = ['pending' => 'border-amber-300 text-amber-700', 'confirmed' => 'border-blue-300 text-blue-700', 'in_progress' => 'border-sky-300 text-sky-700', 'completed' => 'border-emerald-300 text-emerald-700', 'cancelled' => 'border-rose-300 text-rose-700'];
             @endphp
-            <article class="rounded-[30px] bg-white p-5 shadow-[7px_12px_43px_0_rgba(0,0,0,0.14)]">
-                <h2 class="text-xl font-semibold text-black">{{ $order['customer_name'] }}</h2>
-                <p class="mt-2 text-slate-700">{{ $order['service_name'] }}</p>
-                <p class="text-slate-700">{{ \App\Helpers\FormatHelper::rupiah((float)$order['total_price']) }}</p>
-                <p class="text-slate-700">{{ \App\Helpers\FormatHelper::date($order['order_date']) }}</p>
-                <p class="text-slate-700">Kode: {{ $order['order_code'] }}</p>
-                <div class="mt-4 inline-flex items-center gap-2 rounded border-2 px-4 py-2 text-sm font-bold {{ $statusColor[$order['status']] ?? 'border-slate-300 text-slate-700' }}">
-                    {{ $statusText[$order['status']] ?? ucfirst($order['status']) }}
+            <article class="rounded-[30px] bg-white p-5 shadow-[7px_12px_43px_0_rgba(0,0,0,0.14)] flex flex-col justify-between">
+                <div>
+                    <h2 class="text-xl font-semibold text-black">{{ $order['customer_name'] }}</h2>
+                    <p class="mt-2 text-slate-700">{{ $order['service_name'] }}</p>
+                    <p class="text-slate-700">{{ \App\Helpers\FormatHelper::rupiah((float)$order['total_price']) }}</p>
+                    <p class="text-slate-700">{{ \App\Helpers\FormatHelper::date($order['order_date']) }}</p>
+                    <p class="text-slate-700">Kode: {{ $order['order_code'] }}</p>
+                </div>
+
+                <div class="mt-4 flex items-center justify-between gap-3 border-t border-slate-200 pt-4">
+                    
+                    <div class="inline-flex items-center gap-2 rounded border-2 px-4 py-2 text-sm font-bold {{ $statusColor[$order['status']] ?? 'border-slate-300 text-slate-700' }}">
+                        {{ $statusText[$order['status']] ?? ucfirst($order['status']) }}
+                    </div>
+
+                    @if($order['status'] != 'completed' && $order['status'] != 'cancelled')
+                        <form action="{{ route('mitra.orders.update_progress', $order['order_code']) }}" method="POST" onsubmit="return confirm('Update status pesanan ini?')">
+                            @csrf
+                            @method('PATCH')
+                            
+                            @if($order['status'] == 'confirmed' || $order['status'] == 'pending')
+                                <input type="hidden" name="status" value="in_progress">
+                                <button type="submit" style="background-color: #0ea5e9; color: white; padding: 8px 16px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer;">
+                                    Mulai Kerjakan
+                                </button>
+                            @else
+                                <input type="hidden" name="status" value="completed">
+                                <button type="submit" style="background-color: #10b981; color: white; padding: 8px 16px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer;">
+                                    Selesai
+                                </button>
+                            @endif
+                        </form>
+                    @endif
                 </div>
             </article>
         @empty

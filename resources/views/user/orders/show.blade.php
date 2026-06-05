@@ -97,6 +97,57 @@
                 </div>
             </div>
 
+            <div class="rounded-2xl bg-white p-6 shadow-sm">
+                <div class="mb-6 flex items-center justify-between gap-3">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Progress</p>
+                        <h3 class="mt-2 text-xl font-extrabold text-slate-900">Lacak Pesanan</h3>
+                    </div>
+                    <span class="text-sm font-semibold text-[#0073a5] bg-[#e0f2fe] px-3 py-1 rounded-full">
+                        @if($order->status === 'completed') Selesai
+                        @elseif($order->status === 'pending') Menunggu
+                        @elseif($order->status === 'cancelled') Dibatalkan
+                        @elseif($order->status === 'confirmed') Dikonfirmasi
+                        @elseif($order->status === 'in_progress') Sedang Dikerjakan
+                        @else {{ ucfirst($order->status) }}
+                        @endif
+                    </span>
+                </div>
+
+                <div class="border-l-2 border-slate-200 ml-4 space-y-8 py-2">
+                    
+                    <div class="relative pl-6">
+                        <span class="absolute -left-[9px] top-1 h-4 w-4 rounded-full {{ $order->status === 'completed' ? 'bg-[#0073a5] ring-4 ring-white shadow-sm' : 'bg-slate-200 ring-4 ring-white' }}"></span>
+                        <h4 class="text-sm font-bold {{ $order->status === 'completed' ? 'text-[#0073a5]' : 'text-slate-500' }}">Pesanan Selesai</h4>
+                        @if($order->status === 'completed')
+                            <p class="text-xs text-slate-500 mt-1">Layanan telah selesai dilakukan. Terima kasih telah menggunakan KOSERA.</p>
+                        @endif
+                    </div>
+
+                    <div class="relative pl-6">
+                        <span class="absolute -left-[9px] top-1 h-4 w-4 rounded-full {{ in_array($order->status, ['in_progress', 'completed']) ? 'bg-[#0073a5] ring-4 ring-white shadow-sm' : 'bg-slate-200 ring-4 ring-white' }}"></span>
+                        <h4 class="text-sm font-bold {{ in_array($order->status, ['in_progress', 'completed']) ? 'text-[#0073a5]' : 'text-slate-500' }}">Pesanan Sedang Dikerjakan</h4>
+                        @if($order->status === 'in_progress')
+                            <p class="text-xs text-slate-500 mt-1">Mitra/Teknisi sedang memproses layanan pesanan Anda.</p>
+                        @endif
+                    </div>
+
+                    <div class="relative pl-6">
+                        <span class="absolute -left-[9px] top-1 h-4 w-4 rounded-full {{ in_array($order->status, ['confirmed', 'in_progress', 'completed']) ? 'bg-[#0073a5]' : 'bg-slate-200 ring-4 ring-white' }}"></span>
+                        <h4 class="text-sm font-bold {{ in_array($order->status, ['confirmed', 'in_progress', 'completed']) ? 'text-[#0073a5]' : 'text-slate-500' }}">Pesanan Dikonfirmasi</h4>
+                        @if(in_array($order->status, ['confirmed', 'pending']))
+                            <p class="text-xs text-slate-500 mt-1">Mitra telah mengonfirmasi pesanan dan akan segera memprosesnya.</p>
+                        @endif
+                    </div>
+
+                    <div class="relative pl-6">
+                        <span class="absolute -left-[9px] top-1 h-4 w-4 rounded-full bg-[#0073a5] ring-4 ring-white"></span>
+                        <h4 class="text-sm font-bold text-[#0073a5]">Pesanan Dibuat</h4>
+                        <p class="text-xs text-slate-500 mt-1">{{ \Carbon\Carbon::parse($order->created_at)->format('d M Y, H:i') }} - Pesanan berhasil dibuat di sistem.</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Action Buttons -->
             @if($order->status === 'pending')
                 <div class="flex gap-3">

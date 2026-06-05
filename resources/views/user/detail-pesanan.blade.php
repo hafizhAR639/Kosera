@@ -106,38 +106,44 @@
                     <div class="mb-6 flex items-center justify-between gap-3">
                         <div>
                             <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Progress</p>
-                            <h3 class="mt-2 text-xl font-extrabold text-slate-900">Status Pesanan</h3>
+                            <h3 class="mt-2 text-xl font-extrabold text-slate-900">Lacak Pesanan</h3>
                         </div>
-                        <span class="text-sm font-semibold text-slate-500">Sederhana, jelas, langsung ke inti</span>
+                        <span class="text-sm font-semibold text-[#0073a5] bg-[#e0f2fe] px-3 py-1 rounded-full">
+                            {{ $statusLabel }}
+                        </span>
                     </div>
 
-                    <div class="space-y-4">
-                        @foreach ($steps as $index => $step)
-                            <div class="flex items-start gap-4">
-                                <div class="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full {{ $step['done'] ? 'bg-[#0073a5] text-white' : 'bg-slate-100 text-slate-400' }}">
-                                    @if ($step['done'])
-                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
-                                        </svg>
-                                    @else
-                                        <span class="text-sm font-bold">{{ $index + 1 }}</span>
-                                    @endif
-                                </div>
-                                <div class="flex-1 pb-4 {{ !$loop->last ? 'border-b border-slate-100' : '' }}">
-                                    <p class="font-semibold text-slate-900">{{ $step['label'] }}</p>
-                                    <p class="mt-1 text-sm text-slate-500">
-                                        @if ($step['done'])
-                                            Sudah tercatat.
-                                        @else
-                                            Masih menunggu tahap sebelumnya.
-                                        @endif
-                                    </p>
-                                </div>
-                            </div>
-                        @endforeach
+                <div class="border-l-2 border-slate-200 ml-4 space-y-8 py-2">
+                        
+                    <div class="relative pl-6">
+                        <span class="absolute -left-[9px] top-1 h-4 w-4 rounded-full {{ $order->status === 'completed' ? 'bg-[#0073a5] ring-4 ring-white shadow-sm' : 'bg-slate-200 ring-4 ring-white' }}"></span>
+                        <h4 class="text-sm font-bold {{ $order->status === 'completed' ? 'text-[#0073a5]' : 'text-slate-500' }}">Pesanan Selesai</h4>
+                        @if($order->status === 'completed')
+                            <p class="text-xs text-slate-500 mt-1">Layanan telah selesai dilakukan. Terima kasih telah menggunakan KOSERA.</p>
+                        @endif
+                        </div>
+
+                    <div class="relative pl-6">
+                        <span class="absolute -left-[9px] top-1 h-4 w-4 rounded-full {{ $order->status === 'processing' ? 'bg-[#0073a5] ring-4 ring-white shadow-sm' : ($order->status === 'completed' ? 'bg-[#0073a5]' : 'bg-slate-200 ring-4 ring-white') }}"></span>
+                        <h4 class="text-sm font-bold {{ in_array($order->status, ['processing', 'completed']) ? 'text-[#0073a5]' : 'text-slate-500' }}">Pesanan Sedang Dikerjakan</h4>
+                        @if($order->status === 'processing')
+                            <p class="text-xs text-slate-500 mt-1">Mitra/Teknisi sedang memproses layanan pesanan Anda.</p>
+                        @endif
+                    </div>
+
+                    <div class="relative pl-6">
+                        <span class="absolute -left-[9px] top-1 h-4 w-4 rounded-full {{ in_array($order->status, ['pending', 'processing', 'completed']) ? 'bg-[#0073a5]' : 'bg-slate-200 ring-4 ring-white' }}"></span>
+                        <h4 class="text-sm font-bold {{ in_array($order->status, ['pending', 'processing', 'completed']) ? 'text-[#0073a5]' : 'text-slate-500' }}">Pembayaran Diterima</h4>
+                        <p class="text-xs text-slate-500 mt-1">Menunggu mitra untuk memproses pesanan Anda.</p>
+                    </div>
+
+                    <div class="relative pl-6">
+                        <span class="absolute -left-[9px] top-1 h-4 w-4 rounded-full bg-[#0073a5] ring-4 ring-white"></span>
+                        <h4 class="text-sm font-bold text-[#0073a5]">Pesanan Dibuat</h4>
+                        <p class="text-xs text-slate-500 mt-1">{{ optional($order->created_at)->format('d M Y, H:i') }} - Pesanan berhasil dibuat di sistem.</p>
                     </div>
                 </div>
-            </section>
+            </div>
 
             <aside class="space-y-6">
                 <div class="rounded-[2rem] border border-white/70 bg-white p-6 shadow-sm">

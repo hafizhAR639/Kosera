@@ -132,6 +132,8 @@ Route::prefix('mitra')->name('mitra.')->group(function () {
     Route::get('orders/history', [OrderHistoryController::class, 'index'])->name('orders.history');
     Route::get('orders/history/export', [OrderHistoryController::class, 'export'])->name('orders.history.export');
 
+    Route::patch('orders/{id}/update-progress', [OrderHistoryController::class, 'updateProgress'])->name('orders.update_progress');
+
     // Profile: show, edit, update
     Route::get('profile', [MitraProfileController::class, 'show'])->name('profile.show');
     Route::get('profile/edit', [MitraProfileController::class, 'edit'])->name('profile.edit');

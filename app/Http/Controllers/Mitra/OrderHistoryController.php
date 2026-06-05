@@ -57,4 +57,38 @@ class OrderHistoryController extends Controller
 
         return response()->streamDownload($callback, 'orders_export.csv', ['Content-Type' => 'text/csv']);
     }
-}
+    // ... fungsi-fungsi lain di atasnya ...
+
+    public function updateProgress(\Illuminate\Http\Request $request, $orderId)
+    {
+        // 1. Validasi status yang dikirim (hanya boleh in_progress atau completed)
+        $request->validate([
+            'status' => 'required|in:in_progress,completed'
+        ]);
+
+        // 2. Cari pesanan berdasarkan Kode Pesanan
+        $order = \App\Models\Order::where('order_code', $orderId)->firstOrFail();
+
+        // 3. Ubah status pesanan
+        $order->status = $request->status;
+        $order->save();
+
+        // 4. Jika statusnya "completed", tambahkan pendapatan ke Mitra
+        if ($request->status === 'completed') {
+            $mitraId = auth()->id() ?? session('user_id', 1);
+            \App\Models\Earning::create([
+                'user_id' => $mitraId, 
+                'order_id' => $order->id, 
+                'jumlah' => $order->total_harga, // <- Menggunakan 'jumlah' bukan 'amount'
+                'status' => 'pending', // <- Menggunakan 'pending' sesuai ENUM database
+                'tipe' => 'order'
+            ]);
+            
+            return redirect()->back()->with('success', 'Pesanan selesai! Pendapatan telah ditambahkan ke Dashboard Anda.');
+        }
+
+        // 5. Jika statusnya "in_progress", berikan notifikasi biasa
+        return redirect()->back()->with('success', 'Status pesanan berhasil diperbarui menjadi Sedang Dikerjakan.');
+    }
+} // <-- Ini kurung kurawal penutup akhir file
+
