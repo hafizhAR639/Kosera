@@ -29,34 +29,15 @@
     </section>
 
     <section class="grid gap-6 lg:grid-cols-3">
-        <article class="rounded-3xl border border-[#bfc7d0]/20 bg-white p-6 shadow-sm">
-            <div class="mb-4 flex items-center justify-between">
-                <span class="rounded-full bg-[#e0f2fe] px-3 py-1 text-xs font-bold uppercase tracking-wide text-[#006b9b]">Kebersihan</span>
-                <span class="text-xs font-semibold text-amber-500">4.9</span>
-            </div>
-            <h2 class="text-2xl font-bold text-[#141d21]">Clean & Fresh Solo</h2>
-            <p class="mt-2 text-sm text-[#40484f]">Terverifikasi sejak 2021 • 0.8 km</p>
-            <p class="mt-4 text-sm text-[#40484f]">Deep cleaning, cuci kasur, dan kamar mandi.</p>
-        </article>
-
-        <article class="rounded-3xl border border-[#bfc7d0]/20 bg-white p-6 shadow-sm">
-            <div class="mb-4 flex items-center justify-between">
-                <span class="rounded-full bg-[#e0f2fe] px-3 py-1 text-xs font-bold uppercase tracking-wide text-[#006b9b]">Laundry</span>
-                <span class="text-xs font-semibold text-amber-500">4.8</span>
-            </div>
-            <h2 class="text-2xl font-bold text-[#141d21]">Laundry Express 88</h2>
-            <p class="mt-2 text-sm text-[#40484f]">Populer di area sekitar kampus • 1.2 km</p>
-            <p class="mt-4 text-sm text-[#40484f]">Kiloan premium dan cuci sepatu.</p>
-        </article>
-
-        <article class="rounded-3xl border border-[#bfc7d0]/20 bg-white p-6 shadow-sm">
-            <div class="mb-4 flex items-center justify-between">
-                <span class="rounded-full bg-[#e0f2fe] px-3 py-1 text-xs font-bold uppercase tracking-wide text-[#006b9b]">Teknisi</span>
-                <span class="text-xs font-semibold text-amber-500">5.0</span>
-            </div>
-            <h2 class="text-2xl font-bold text-[#141d21]">Sejuk Teknik AC</h2>
-            <p class="mt-2 text-sm text-[#40484f]">Spesialis cuci AC & isi freon • 3.1 km</p>
-            <p class="mt-4 text-sm text-[#40484f]">Perbaikan elektronik dan perawatan AC.</p>
-        </article>
+        @foreach ($services as $service)
+            <a href="{{ route('user.orders.create', ['service_id' => $service->id]) }}" class="block rounded-3xl border border-[#bfc7d0]/20 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006b9b]">
+                <div class="mb-4">
+                    <span class="rounded-full bg-[#e0f2fe] px-3 py-1 text-xs font-bold uppercase tracking-wide text-[#006b9b]">{{ $service->kategori }}</span>
+                </div>
+                <h2 class="text-2xl font-bold text-[#141d21]">{{ $service->nama_layanan }}</h2>
+                <p class="mt-4 text-sm text-[#40484f]">{{ $service->deskripsi }}</p>
+                <p class="mt-4 text-base font-semibold text-[#006b9b]">Mulai dari Rp {{ number_format($service->harga_mulai, 0, ',', '.') }}</p>
+            </a>
+        @endforeach
     </section>
 </x-layout.user-sidebar>
