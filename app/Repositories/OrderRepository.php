@@ -16,13 +16,17 @@ class OrderRepository
         $status = $filters['status'] ?? 'all';
 
         // Build base query
-        $baseQuery = Order::byUser($userId);
+        $query = Order::byUser($userId)
+            ->withDetails();
 
-        // Get orders (return Eloquent models for existing Blade views)
-        $orders = Order::byUser($userId)
-            ->withDetails()
-            ->when($status !== 'all', fn($q) => $q->byStatus($status))
-            ->latest('created_at')
+        // Apply filters
+        if ($status === 'berlangsung') {
+            $query->whereIn('status', ['pending', 'confirmed', 'in_progress']);
+        } elseif ($status !== 'all') {
+            $query->byStatus($status);
+        }
+
+        $orders = $query->latest('created_at')
             ->paginate(10);
 
         // Get stats (single query with aggregation)
@@ -30,9 +34,9 @@ class OrderRepository
             ->selectRaw('
                 COUNT(*) as total,
                 SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as completed,
-                SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as pending,
+                SUM(CASE WHEN status IN (?, ?, ?) THEN 1 ELSE 0 END) as berlangsung,
                 SUM(CASE WHEN status = ? THEN total_harga ELSE 0 END) as total_spent
-            ', ['completed', 'pending', 'completed'])
+            ', ['completed', 'pending', 'confirmed', 'in_progress', 'completed'])
             ->first();
 
         return [
@@ -40,7 +44,7 @@ class OrderRepository
             'stats' => [
                 'total' => (int) ($stats->total ?? 0),
                 'completed' => (int) ($stats->completed ?? 0),
-                'pending' => (int) ($stats->pending ?? 0),
+                'berlangsung' => (int) ($stats->berlangsung ?? 0),
                 'total_spent' => (float) ($stats->total_spent ?? 0),
             ],
         ];

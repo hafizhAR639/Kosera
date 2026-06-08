@@ -140,8 +140,19 @@ Route::prefix('mitra')->name('mitra.')->group(function () {
     Route::post('profile/edit', [MitraProfileController::class, 'update'])->name('profile.update');
 
     Route::resource('portfolio', PortfolioController::class);
-        Route::resource('layanan', ServiceController::class);
+    Route::resource('layanan', ServiceController::class);
     Route::resource('certificates', CertificateController::class);
+
+    Route::get('earnings', function () {
+        $userId = Auth::id() ?? 1;
+        $stats = app(\App\Services\MitraService::class)->getStats($userId);
+        $chartData = app(\App\Services\MitraService::class)->getRevenueChart($userId, 12);
+        return view('mitra.earnings', [
+            'title' => 'Grafik Pendapatan',
+            'stats' => $stats,
+            'chartData' => $chartData
+        ]);
+    })->name('earnings');
 });
 
 // User Routes - Services & Orders

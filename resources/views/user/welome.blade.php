@@ -1,197 +1,252 @@
-@extends('layouts.user')
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>KOSERA - Jasa Anak Kos Terpercaya</title>
 
-@section('content')
-<!-- Kebersihan Section -->
-<div class="flex flex-col self-stretch gap-6">
-    <div class="flex justify-between items-start self-stretch">
-        <div class="flex flex-col shrink-0 items-center">
-            <div class="flex flex-col items-start pr-[251px]">
-                <span class="text-[#191C1E] text-[32px] font-bold">Kebersihan</span>
-            </div>
-            <div class="flex flex-col items-center">
-                <span class="text-[#434656] text-base">Ahli kebersihan kamar dan perawatan pakaian pilihan.</span>
-            </div>
-        </div>
-        <a href="{{ route('login') }}" class="mt-12 inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2 py-1 text-[#006A9A] text-xs font-bold transition-colors hover:bg-[#EFF1F9] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006A9A]">
-            <span>Lihat Semua</span>
-            <img src="https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Kx2XDVWPKH/bar9k6gb_expires_30_days.png" class="w-1 h-2 object-fill" />
-        </a>
-    </div>
-    <div class="flex items-center self-stretch gap-6">
-        <!-- Card 1 -->
-        <div class="flex flex-1 flex-col bg-white p-[25px] gap-4 rounded-lg border border-solid border-[#C3C5D9]">
-            <div class="flex items-start self-stretch gap-4">
-                <img src="https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Kx2XDVWPKH/tdrr4hca_expires_30_days.png" class="w-16 h-16 object-fill" />
-                <div class="flex-1">
-                    <div class="flex justify-between items-start self-stretch">
-                        <span class="text-[#191C1E] text-xl font-bold">Clean & Fresh Solo</span>
-                        <div class="flex shrink-0 items-center gap-[3px]">
-                            <img src="https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Kx2XDVWPKH/cc3l7hzw_expires_30_days.png" class="w-[13px] h-3 object-fill" />
-                            <span class="text-[#006A9A] text-[11px] font-bold">4.9</span>
-                        </div>
-                    </div>
-                    <span class="text-[#434656] text-xs text-left">Terverifikasi sejak 2021</span>
-                </div>
-            </div>
-            <div class="flex flex-col self-stretch pb-2 gap-1 text-left">
-                <span class="text-[#006A9A] text-[11px] font-bold uppercase tracking-wide">Layanan Tersedia</span>
-                <div class="flex items-center self-stretch gap-2">
-                    <span class="bg-[#ECEEF0] py-1 px-2 rounded-md text-[#434656] text-[11px] font-bold">Deep Cleaning</span>
-                    <span class="bg-[#ECEEF0] py-1 px-2 rounded-md text-[#434656] text-[11px] font-bold">Cuci Kasur</span>
-                    <span class="bg-[#ECEEF0] py-1 px-2 rounded-md text-[#434656] text-[11px] font-bold">Kamar Mandi</span>
-                </div>
-            </div>
-            <div class="flex justify-between items-start self-stretch pt-[17px]">
-                <div class="flex flex-col text-left">
-                    <span class="text-[#434656] text-[11px] font-bold">Mulai dari</span>
-                    <span class="text-[#006A9A] text-base font-bold">Rp 45.000</span>
-                </div>
-                <a href="{{ route('login') }}" class="inline-flex items-center justify-center rounded bg-[#006A9A] px-4 py-2 text-xs font-bold text-white transition-colors hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006A9A]">Pesan Jasa</a>
-            </div>
-        </div>
-        <!-- Card 2 -->
-        <div class="flex flex-1 flex-col bg-white p-[25px] gap-4 rounded-lg border border-solid border-[#C3C5D9]">
-            <div class="flex items-start self-stretch gap-[15px]">
-                <img src="https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Kx2XDVWPKH/c8c1pxfi_expires_30_days.png" class="w-16 h-16 object-fill" />
-                <div class="flex-1">
-                    <div class="flex justify-between items-start self-stretch">
-                        <span class="text-[#191C1E] text-xl font-bold">Laundry Express 88</span>
-                        <div class="flex shrink-0 items-center gap-[3px]">
-                            <img src="https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Kx2XDVWPKH/2lzzewod_expires_30_days.png" class="w-[13px] h-3 object-fill" />
-                            <span class="text-[#006A9A] text-[11px] font-bold">4.8</span>
-                        </div>
-                    </div>
-                    <p class="text-[#434656] text-xs text-left">Populer di area sekitar kampus</p>
-                </div>
-            </div>
-            <div class="flex flex-col self-stretch pb-2 gap-1 text-left">
-                <span class="text-[#006A9A] text-[11px] font-bold uppercase tracking-wide">Layanan Tersedia</span>
-                <div class="flex items-center self-stretch gap-2">
-                    <span class="bg-[#ECEEF0] py-1 px-2 rounded-md text-[#434656] text-[11px] font-bold">Kiloan Premium</span>
-                    <span class="bg-[#ECEEF0] py-1 px-2 rounded-md text-[#434656] text-[11px] font-bold">Cuci Sepatu</span>
-                    <span class="bg-[#ECEEF0] py-1 px-2 rounded-md text-[#434656] text-[11px] font-bold">Satuan</span>
-                </div>
-            </div>
-            <div class="flex justify-between items-start self-stretch pt-[17px]">
-                <div class="flex flex-col text-left">
-                    <span class="text-[#434656] text-[11px] font-bold">Mulai dari</span>
-                    <span class="text-[#006A9A] text-base font-bold">Rp 8.000/kg</span>
-                </div>
-                <a href="{{ route('login') }}" class="inline-flex items-center justify-center rounded bg-[#006A9A] px-4 py-2 text-xs font-bold text-white transition-colors hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006A9A]">Pesan Jasa</a>
-            </div>
-        </div>
-        <!-- Card 3 -->
-        <div class="flex flex-1 flex-col bg-white p-[25px] gap-4 rounded-lg border border-solid border-[#C3C5D9]">
-            <div class="flex items-start self-stretch gap-[15px]">
-                <img src="https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Kx2XDVWPKH/5dkcjc25_expires_30_days.png" class="w-16 h-16 object-fill" />
-                <div class="flex-1">
-                    <div class="flex justify-between items-start self-stretch">
-                        <span class="text-[#191C1E] text-xl font-bold text-left">Pak Budi General Help</span>
-                        <div class="flex shrink-0 items-center gap-1">
-                            <img src="https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Kx2XDVWPKH/8nznma75_expires_30_days.png" class="w-[13px] h-3 object-fill" />
-                            <span class="text-[#006A9A] text-[11px] font-bold">5.0</span>
-                        </div>
-                    </div>
-                    <span class="text-[#434656] text-xs block text-left">Spesialis Kos-kosan</span>
-                </div>
-            </div>
-            <div class="flex flex-col self-stretch pb-2 gap-1 text-left">
-                <span class="text-[#006A9A] text-[11px] font-bold uppercase tracking-wide">Layanan Tersedia</span>
-                <div class="flex items-center self-stretch gap-2">
-                    <span class="bg-[#ECEEF0] py-1 px-2 rounded-md text-[#434656] text-[11px] font-bold">Bereskan Kamar</span>
-                    <span class="bg-[#ECEEF0] py-1 px-2 rounded-md text-[#434656] text-[11px] font-bold">Angkut Barang</span>
-                    <span class="bg-[#ECEEF0] py-1 px-2 rounded-md text-[#434656] text-[11px] font-bold">Cat Ulang</span>
-                </div>
-            </div>
-            <div class="flex justify-between items-start self-stretch pt-[17px]">
-                <div class="flex flex-col text-left">
-                    <span class="text-[#434656] text-[11px] font-bold">Mulai dari</span>
-                    <span class="text-[#006A9A] text-base font-bold">Rp 60.000</span>
-                </div>
-                <a href="{{ route('login') }}" class="inline-flex items-center justify-center rounded bg-[#006A9A] px-4 py-2 text-xs font-bold text-white transition-colors hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006A9A]">Pesan Jasa</a>
-            </div>
-        </div>
-    </div>
-</div>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-<!-- Teknisi Section -->
-<div class="flex flex-col self-stretch gap-6">
-    <div class="flex justify-between items-start self-stretch">
-        <div class="flex flex-col shrink-0 items-center">
-            <div class="flex flex-col items-start pr-[140px]">
-                <span class="text-[#191C1E] text-[32px] font-bold">Teknisi dan Perbaikan</span>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .grid-dots { background-image: radial-gradient(#CBD5E1 2px, transparent 2px); background-size: 20px 20px; }
+    </style>
+</head>
+<body class="bg-[linear-gradient(180deg,#dff0f8_0%,#eef8fc_52%,#f8fcfe_100%)] text-kosera-900 antialiased">
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 border-b border-kosera-100 bg-white/95 px-6 py-4 shadow-sm backdrop-blur-sm md:px-12">
+        <div class="mx-auto flex max-w-7xl items-center justify-between gap-6">
+            <div class="flex items-center gap-10">
+                <a href="{{ route('welcome') }}" class="flex items-center gap-3">
+                    <img alt="KOSERA Logo" class="h-10 w-auto object-contain" src="{{ asset('img/logos/kosera-logo.png') }}" />
+                </a>
+                <div class="hidden items-center gap-8 text-sm font-bold md:flex">
+                    <a class="text-slate-600 hover:text-kosera-600 transition-colors" href="#">Tentang Kami</a>
+                    <a class="text-slate-600 hover:text-kosera-600 transition-colors" href="#">Kontak</a>
+                </div>
             </div>
-            <div class="flex flex-col items-center">
-                <span class="text-[#434656] text-base">Solusi untuk peralatan elektronik dan AC yang bermasalah.</span>
+            <div class="flex items-center gap-3">
+                <a href="{{ route('login') }}" class="rounded-full border border-kosera-200 bg-white px-8 py-2 font-bold text-kosera-600 transition-all hover:bg-kosera-50">Masuk</a>
+                <a href="{{ route('register') }}" class="rounded-full bg-kosera-400 px-8 py-2 font-bold text-white transition-all hover:bg-kosera-600 shadow-md hover:shadow-lg">Daftar</a>
             </div>
         </div>
-        <a href="{{ route('login') }}" class="mt-12 inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2 py-1 text-[#006A9A] text-xs font-bold transition-colors hover:bg-[#EFF1F9] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006A9A]">
-            <span>Lihat Semua</span>
-            <img src="https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Kx2XDVWPKH/0ouw7ikk_expires_30_days.png" class="w-1 h-2 object-fill" />
-        </a>
-    </div>
-    <div class="flex items-center self-stretch gap-6">
-        <!-- Card 1 Teknisi -->
-        <div class="flex flex-1 flex-col bg-white p-[25px] gap-4 rounded-lg border border-solid border-[#C3C5D9]">
-            <div class="flex items-start self-stretch gap-4">
-                <img src="https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Kx2XDVWPKH/f6dky247_expires_30_days.png" class="w-16 h-16 object-fill" />
-                <div class="flex-1">
-                    <div class="flex justify-between items-start self-stretch">
-                        <span class="text-[#191C1E] text-xl font-bold">Sejuk Teknik AC</span>
-                        <div class="flex shrink-0 items-center gap-[3px]">
-                            <img src="https://storage.googleapis.com/tagjs-prod.appspot.com/v1/Kx2XDVWPKH/jsk6t72g_expires_30_days.png" class="w-[13px] h-3 object-fill" />
-                            <span class="text-[#006A9A] text-[11px] font-bold">4.7</span>
-                        </div>
-                    </div>
-                    <span class="text-[#434656] text-xs block text-left">Spesialis Cuci AC & Isi Freon</span>
-                </div>
-            </div>
-            <div class="flex flex-col self-stretch pb-2 gap-1 text-left">
-                <span class="text-[#006A9A] text-[11px] font-bold uppercase tracking-wide">Layanan Tersedia</span>
-                <div class="flex items-center self-stretch gap-2">
-                    <span class="bg-[#ECEEF0] py-1 px-2 rounded-md text-[#434656] text-[11px] font-bold">Cuci AC</span>
-                    <span class="bg-[#ECEEF0] py-1 px-2 rounded-md text-[#434656] text-[11px] font-bold">Bongkar Pasang</span>
-                </div>
-            </div>
-            <div class="flex justify-between items-start self-stretch pt-[17px]">
-                <div class="flex flex-col text-left">
-                    <span class="text-[#434656] text-[11px] font-bold">Mulai dari</span>
-                    <span class="text-[#006A9A] text-base font-bold">Rp 75.000</span>
-                </div>
-                <a href="{{ route('login') }}" class="inline-flex items-center justify-center rounded bg-[#006A9A] px-4 py-2 text-xs font-bold text-white transition-colors hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006A9A]">Pesan Jasa</a>
-            </div>
-        </div>
-        <!-- Card 2 & 3 bisa ditambahkan di sini mengikuti pola yang sama -->
-    </div>
-</div>
+    </nav>
 
-<!-- Jadilah Mitra KOSERA Section -->
-<div class="flex flex-col self-stretch mt-12">
-    <div class="bg-[#1E8593] rounded-[40px] p-12 md:p-16 overflow-hidden relative shadow-xl">
-        <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-12 text-left">
-            <div class="md:w-3/5">
-                <h2 class="text-[48px] font-extrabold text-white mb-6 leading-tight">Jadilah Mitra KOSERA</h2>
-                <p class="text-blue-50 text-[18px] font-medium leading-relaxed mb-10">
-                    Dapatkan penghasilan tambahan dan kembangkan jasa profesional Anda bersama komunitas anak kos terbaik di Indonesia. Kami membantu Anda menjangkau ribuan pelanggan setiap harinya.
+    <main>
+        <!-- Hero Section -->
+        <section class="mx-auto flex max-w-7xl flex-col items-center gap-12 px-6 py-16 md:flex-row md:py-24">
+            <div class="flex-1 space-y-8">
+                <div class="inline-flex items-center rounded-full border border-orange-100 bg-orange-50 px-4 py-2 shadow-sm">
+                    <span class="text-xs font-bold text-orange-500">Daftarkan Dirimu Sekarang!</span>
+                </div>
+                <h1 class="text-4xl font-extrabold leading-tight text-slate-900 md:text-5xl lg:text-6xl">
+                    Selamat Datang di<br />
+                    <span class="text-kosera-400">Mitra KOSERA</span>
+                </h1>
+                <p class="max-w-lg text-lg leading-relaxed text-slate-600">
+                    Masuk untuk mengelola pesanan dan mulai mendapatkan penghasilan dari layanan yang anda tawarkan.
                 </p>
-                <div class="flex flex-col sm:flex-row items-center gap-8">
-                    <a href="{{ route('register') }}" class="bg-white text-[#1E8593] hover:bg-gray-50 px-10 py-4 rounded-full font-bold text-[16px] transition-all transform hover:scale-[1.02] shadow-lg no-underline">
-                        Daftar Sekarang
-                    </a>
-                    <a href="/admin" class="text-white font-bold hover:underline text-[16px] flex items-center gap-2 no-underline">
-                        Pelajari lebih lanjut
+                <div class="flex flex-wrap gap-4 pt-2">
+                    <a href="{{ route('register') }}" class="inline-flex rounded-xl bg-kosera-400 px-10 py-4 text-lg font-bold text-white shadow-xl transition-all hover:scale-[1.02] hover:bg-kosera-600">
+                        Mulai Sekarang
                     </a>
                 </div>
             </div>
-            <div class="md:w-2/5 flex justify-center">
-                <div class="w-64 h-64 bg-white/10 backdrop-blur-xl rounded-3xl flex items-center justify-center p-12 border border-white/20 transform rotate-6 hover:rotate-0 transition-transform duration-700">
-                    <svg class="h-full w-full text-white/90" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
-                    </svg>
+
+            <div class="relative flex-1 w-full">
+                <div class="relative mx-auto w-full max-w-md">
+                    <div class="absolute inset-0 -rotate-3 rounded-[3rem] bg-slate-50 z-0 border border-slate-100 shadow-sm"></div>
+                    <div class="relative z-10 p-4">
+                        <img alt="Mitra KOSERA" class="aspect-[4/5] w-full rounded-[2.5rem] object-cover object-top shadow-2xl" src="{{ asset('img/illustrations/hero-mitra-welcome.png') }}" />
+                    </div>
+                    <div class="absolute bottom-10 right-0 z-20 flex items-center gap-3 rounded-2xl bg-white/95 p-4 shadow-2xl border border-slate-50 backdrop-blur-sm">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-600">
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.1"></path></svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-extrabold text-slate-900">1.000++</p>
+                            <p class="text-xs font-medium text-slate-500">Mitra Bergabung</p>
+                        </div>
+                    </div>
+                    <div class="grid-dots absolute -bottom-6 -left-6 z-0 h-32 w-32 opacity-30"></div>
                 </div>
             </div>
-        </div>
-        <div class="absolute -top-16 -right-16 w-80 h-80 bg-white/5 rounded-full blur-3xl"></div>
-    </div>
-</div>
-@endsection
+        </section>
+
+        <!-- Persyaratan Section -->
+        <section class="bg-slate-50/50 py-24">
+            <div class="mx-auto max-w-7xl px-6">
+                <div class="mb-20 text-center">
+                    <h2 class="inline-block rounded-2xl bg-kosera-400 px-10 py-4 text-xl font-extrabold text-white shadow-xl">
+                        Persyaratan Umum Menjadi Mitra Kosera
+                    </h2>
+                </div>
+                <div class="flex flex-col items-center justify-center gap-16 lg:flex-row">
+                    <div class="relative lg:w-1/3">
+                        <img alt="Requirements Illustration" class="h-auto w-full rounded-[2.5rem] object-cover shadow-2xl grayscale-[0.1]" src="{{ asset('img/illustrations/illustration-feature.png') }}" />
+                        <div class="absolute -bottom-6 -right-6 rounded-2xl border border-slate-100 bg-white px-6 py-3 shadow-xl">
+                            <span class="text-sm font-extrabold text-slate-700 italic">Ini Dia Syaratnya!</span>
+                        </div>
+                    </div>
+                    <div class="grid flex-1 grid-cols-1 gap-6 md:grid-cols-2 lg:w-2/3">
+                        <div class="flex min-h-[160px] flex-col items-center justify-center rounded-[2rem] bg-white p-8 text-center shadow-md border border-slate-100 transition-all hover:shadow-lg hover:border-kosera-100 group">
+                            <p class="text-lg font-bold leading-snug text-slate-700 group-hover:text-kosera-600">Minimal 18 Tahun dan Maksimal 50 Tahun</p>
+                        </div>
+                        <div class="flex min-h-[160px] flex-col items-center justify-center rounded-[2rem] bg-white p-8 text-center shadow-md border border-slate-100 transition-all hover:shadow-lg hover:border-kosera-100 group">
+                            <p class="text-lg font-bold leading-snug text-slate-700 group-hover:text-kosera-600">Memiliki KTP<br />(Identitas Diri)</p>
+                        </div>
+                        <div class="flex min-h-[160px] flex-col items-center justify-center rounded-[2rem] bg-white p-8 text-center shadow-md border border-slate-100 transition-all hover:shadow-lg hover:border-kosera-100 group">
+                            <p class="text-lg font-bold leading-snug text-slate-700 group-hover:text-kosera-600">Memiliki Nomor HP Aktif</p>
+                        </div>
+                        <div class="flex min-h-[160px] flex-col items-center justify-center rounded-[2rem] bg-white p-8 text-center shadow-md border border-slate-100 transition-all hover:shadow-lg hover:border-kosera-100 group">
+                            <p class="text-lg font-bold leading-snug text-slate-700 group-hover:text-kosera-600">Memiliki Keahlian Sesuai Layanan</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kenapa Harus Bergabung Section -->
+        <section class="py-24">
+            <div class="mx-auto max-w-7xl px-6">
+                <div class="mb-24 text-center">
+                    <h2 class="inline-block rounded-2xl bg-kosera-400 px-12 py-4 text-xl font-extrabold uppercase tracking-tight text-white shadow-xl">
+                        Kenapa Harus Bergabung Dengan Kosera?
+                    </h2>
+                </div>
+                
+                <div class="mx-auto max-w-5xl space-y-32">
+                    <div class="flex flex-col items-center gap-16 md:flex-row">
+                        <div class="flex flex-1 justify-center relative">
+                            <div class="absolute inset-0 bg-kosera-50 rounded-full blur-3xl opacity-50"></div>
+                            <img alt="Income Illustration" class="relative z-10 h-auto w-full max-w-sm drop-shadow-2xl" src="{{ asset('img/illustrations/illustration-growth-motivation.png') }}" />
+                        </div>
+                        <div class="flex-1 text-center md:text-left space-y-4">
+                            <div class="flex items-center justify-center gap-6 md:justify-start">
+                                <h3 class="text-2xl font-extrabold uppercase tracking-tight text-slate-900">Penghasilan Tambahan</h3>
+                                <span class="flex h-12 w-12 items-center justify-center rounded-full bg-kosera-400 text-xl font-black text-white shadow-lg">1</span>
+                            </div>
+                            <p class="text-lg leading-relaxed text-slate-600">Dapatkan penghasilan dari setiap pekerjaan yang kamu selesaikan secara fleksibel.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col items-center gap-16 md:flex-row-reverse">
+                        <div class="flex flex-1 justify-center relative">
+                            <div class="absolute inset-0 bg-orange-50 rounded-full blur-3xl opacity-50"></div>
+                            <img alt="Skills Illustration" class="relative z-10 h-auto w-full max-w-sm drop-shadow-2xl" src="{{ asset('img/illustrations/illustration-teamwork.png') }}" />
+                        </div>
+                        <div class="flex-1 text-center md:text-right space-y-4">
+                            <div class="flex items-center justify-center gap-6 md:justify-end">
+                                <span class="flex h-12 w-12 items-center justify-center rounded-full bg-kosera-400 text-xl font-black text-white shadow-lg">2</span>
+                                <h3 class="text-2xl font-extrabold uppercase tracking-tight text-slate-900">Pilih Sesuai Keahlian</h3>
+                            </div>
+                            <p class="text-lg leading-relaxed text-slate-600">Dapat memilih pekerjaan berdasarkan kemampuan yang dimiliki.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col items-center gap-16 md:flex-row">
+                        <div class="flex flex-1 justify-center relative">
+                            <div class="absolute inset-0 bg-green-50 rounded-full blur-3xl opacity-50"></div>
+                            <img alt="Easy to Use Illustration" class="relative z-10 h-auto w-full max-w-sm drop-shadow-2xl" src="{{ asset('img/illustrations/illustration-authentication.png') }}" />
+                        </div>
+                        <div class="flex-1 text-center md:text-left space-y-4">
+                            <div class="flex items-center justify-center gap-6 md:justify-start">
+                                <h3 class="text-2xl font-extrabold uppercase tracking-tight text-slate-900">Mudah Digunakan</h3>
+                                <span class="flex h-12 w-12 items-center justify-center rounded-full bg-kosera-400 text-xl font-black text-white shadow-lg">3</span>
+                            </div>
+                            <p class="text-lg leading-relaxed text-slate-600">Kelola seluruh pesanan dengan sistem yang praktis, dan mudah dipahami. Menyelesaikan pekerjaan dapat dilakukan dalam satu dashboard.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col items-center gap-16 md:flex-row-reverse">
+                        <div class="flex flex-1 justify-center relative">
+                            <div class="absolute inset-0 bg-blue-50 rounded-full blur-3xl opacity-50"></div>
+                            <img alt="Trusted Illustration" class="relative z-10 h-auto w-full max-w-sm drop-shadow-2xl" src="{{ asset('img/illustrations/illustration-social-media.png') }}" />
+                        </div>
+                        <div class="flex-1 text-center md:text-right space-y-4">
+                            <div class="flex items-center justify-center gap-6 md:justify-end">
+                                <span class="flex h-12 w-12 items-center justify-center rounded-full bg-kosera-400 text-xl font-black text-white shadow-lg">4</span>
+                                <h3 class="text-2xl font-extrabold uppercase tracking-tight text-slate-900">Aman dan Terpercaya</h3>
+                            </div>
+                            <p class="text-lg leading-relaxed text-slate-600">Sistem verifikasi membantu menjaga keamanan serta meningkatkan kepercayaan pengguna.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cerita Mitra Section -->
+        <section class="bg-kosera-50 py-24">
+            <div class="mx-auto max-w-7xl px-6">
+                <div class="mb-20 text-center">
+                    <h2 class="inline-block rounded-2xl bg-kosera-400 px-16 py-4 text-xl font-extrabold text-white shadow-xl">
+                        Cerita Mitra Kosera
+                    </h2>
+                </div>
+                <div class="mx-auto grid max-w-6xl grid-cols-1 gap-8 md:grid-cols-3">
+                    <!-- Testimonial 1 -->
+                    <div class="group flex flex-col space-y-6 rounded-[2.5rem] bg-white p-10 shadow-lg border border-transparent transition-all hover:shadow-2xl hover:border-kosera-100">
+                        <div class="flex text-yellow-400 text-xl">★★★★★</div>
+                        <p class="text-base leading-relaxed text-slate-600 italic">"Sejak gabung di Kosera, aku jadi lebih mudah dapat pekerjaan tambahan. Sistemnya juga simpel, jadi gak ribet."</p>
+                        <div class="flex items-center gap-4 pt-4 border-t border-slate-50">
+                            <div class="h-14 w-14 rounded-2xl bg-kosera-50 flex items-center justify-center text-kosera-400 text-2xl font-black">A</div>
+                            <div>
+                                <p class="text-sm font-black text-slate-900">Andi</p>
+                                <p class="text-xs font-bold text-slate-400">Perbaikan, Antar Jemput</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Testimonial 2 -->
+                    <div class="group flex flex-col space-y-6 rounded-[2.5rem] bg-white p-10 shadow-lg border border-transparent transition-all hover:shadow-2xl hover:border-kosera-100">
+                        <div class="flex text-yellow-400 text-xl">★★★★★</div>
+                        <p class="text-base leading-relaxed text-slate-600 italic">"Awalnya coba-coba, tapi ternyata banyak peluang kerja. Enak juga bisa pilih pekerjaan sendiri."</p>
+                        <div class="flex items-center gap-4 pt-4 border-t border-slate-50">
+                            <div class="h-14 w-14 rounded-2xl bg-orange-50 flex items-center justify-center text-orange-400 text-2xl font-black">R</div>
+                            <div>
+                                <p class="text-sm font-black text-slate-900">Rizky</p>
+                                <p class="text-xs font-bold text-slate-400">Titip Beli</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Testimonial 3 -->
+                    <div class="group flex flex-col space-y-6 rounded-[2.5rem] bg-white p-10 shadow-lg border border-transparent transition-all hover:shadow-2xl hover:border-kosera-100">
+                        <div class="flex text-yellow-400 text-xl">★★★★★</div>
+                        <p class="text-base leading-relaxed text-slate-600 italic">"Aku jadi lebih produktif. Selain bantu orang lain, juga bisa dapat penghasilan tambahan."</p>
+                        <div class="flex items-center gap-4 pt-4 border-t border-slate-50">
+                            <div class="h-14 w-14 rounded-2xl bg-green-50 flex items-center justify-center text-green-400 text-2xl font-black">S</div>
+                            <div>
+                                <p class="text-sm font-black text-slate-900">Sinta</p>
+                                <p class="text-xs font-bold text-slate-400">Perbaikan, Titip Beli</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final CTA Section -->
+        <section class="mx-auto max-w-7xl px-6 py-24">
+            <div class="relative overflow-hidden rounded-[3.5rem] bg-gradient-to-br from-kosera-400 to-kosera-600 p-16 text-center shadow-2xl transition-all hover:scale-[1.01] md:p-24">
+                <div class="relative z-10 space-y-8">
+                    <h2 class="text-4xl font-extrabold leading-tight text-white md:text-5xl lg:text-6xl">
+                        Gabung Sekarang dan Mulai<br />Jadi Mitra Kosera!
+                    </h2>
+                    <div class="flex justify-center pt-4">
+                        <a href="{{ route('register') }}" class="rounded-full bg-white px-12 py-5 text-xl font-black text-kosera-600 shadow-xl transition-all hover:bg-slate-50 hover:scale-105 active:scale-95">
+                            Daftar Mitra Sekarang
+                        </a>
+                    </div>
+                </div>
+                <!-- Decorations -->
+                <div class="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-white/10 blur-3xl"></div>
+                <div class="absolute -bottom-24 -left-24 h-96 w-96 rounded-full bg-black/10 blur-3xl"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="border-t border-slate-100 py-12 text-center text-slate-400">
+        <p class="text-sm font-medium">&copy; 2024 KOSERA. All rights reserved.</p>
+    </footer>
+</body>
+</html>

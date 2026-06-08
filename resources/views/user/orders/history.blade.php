@@ -2,135 +2,125 @@
     $pageTitle = 'Riwayat Pesanan - KOSERA';
 @endphp
 
-<x-layout.user-sidebar :pageTitle="$pageTitle" :bgColor="'#f4faff'" mainClass="max-w-4xl mx-auto p-6">
-    <!-- Header -->
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold text-slate-900">Riwayat Pesanan</h1>
-        <p class="text-slate-500 mt-2">Kelola pesanan dan lacak status layanan Anda</p>
+<x-layout.user-sidebar :pageTitle="$pageTitle" :bgColor="'#f4faff'" mainClass="max-w-5xl mx-auto p-6 md:p-8 space-y-8">
+    <!-- Header Section -->
+    <div class="mt-10">
+        <h1 class="text-4xl font-bold text-[#141d21]">Riwayat Pesanan</h1>
+        <p class="mt-2 text-sm text-[#40484f]">Pantau status dan kelola semua pesanan layanan Anda di satu tempat.</p>
     </div>
 
-    <!-- Stats -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div class="rounded-lg bg-white p-4 shadow-sm border border-slate-100">
-            <p class="text-xs text-slate-500 uppercase font-bold tracking-wide mb-1">Total Pesanan</p>
-            <p class="text-2xl font-bold text-slate-900">{{ $stats['total'] }}</p>
-        </div>
-        <div class="rounded-lg bg-white p-4 shadow-sm border border-slate-100">
-            <p class="text-xs text-slate-500 uppercase font-bold tracking-wide mb-1">Selesai</p>
-            <p class="text-2xl font-bold text-green-600">{{ $stats['completed'] }}</p>
-        </div>
-        <div class="rounded-lg bg-white p-4 shadow-sm border border-slate-100">
-            <p class="text-xs text-slate-500 uppercase font-bold tracking-wide mb-1">Tertunda</p>
-            <p class="text-2xl font-bold text-yellow-600">{{ $stats['pending'] }}</p>
-        </div>
-        <div class="rounded-lg bg-white p-4 shadow-sm border border-slate-100">
-            <p class="text-xs text-slate-500 uppercase font-bold tracking-wide mb-1">Total Belanja</p>
-            <p class="text-2xl font-bold text-[#0073a5]">
-                Rp {{ number_format($stats['total_spent'], 0) }}
-            </p>
-        </div>
-    </div>
 
-    <!-- Filter -->
-    <div class="mb-6">
-        <form method="GET" action="{{ route('user.orders.history') }}" class="flex gap-3">
-            <select name="status" class="px-4 py-2 rounded-lg border border-slate-200 bg-white text-sm focus:border-[#0073a5] focus:ring-2 focus:ring-[#0073a5]/20 outline-none transition">
-                <option value="all" @if($filters['status'] === 'all') selected @endif>Semua Status</option>
-                <option value="pending" @if($filters['status'] === 'pending') selected @endif>Tertunda</option>
-                <option value="completed" @if($filters['status'] === 'completed') selected @endif>Selesai</option>
-                <option value="cancelled" @if($filters['status'] === 'cancelled') selected @endif>Dibatalkan</option>
-            </select>
-            <button type="submit" class="px-4 py-2 rounded-lg bg-[#0073a5] text-white text-sm font-semibold hover:bg-[#005981] transition">
-                Filter
-            </button>
-        </form>
+    <!-- Tabs Filter -->
+    <div class="border-b border-[#bfc7d0]/30">
+        <div class="flex gap-8">
+            <a href="{{ route('user.orders.history', ['status' => 'all']) }}" 
+               class="pb-4 text-sm font-bold transition-all relative {{ ($filters['status'] ?? 'all') === 'all' ? 'text-[#006b9b]' : 'text-[#40484f] hover:text-[#006b9b]' }}">
+                Semua
+                @if(($filters['status'] ?? 'all') === 'all')
+                    <div class="absolute bottom-0 left-0 w-full h-0.5 bg-[#006b9b]"></div>
+                @endif
+            </a>
+            <a href="{{ route('user.orders.history', ['status' => 'berlangsung']) }}" 
+               class="pb-4 text-sm font-bold transition-all relative {{ ($filters['status'] ?? '') === 'berlangsung' ? 'text-[#006b9b]' : 'text-[#40484f] hover:text-[#006b9b]' }}">
+                Berlangsung
+                @if(($filters['status'] ?? '') === 'berlangsung')
+                    <div class="absolute bottom-0 left-0 w-full h-0.5 bg-[#006b9b]"></div>
+                @endif
+            </a>
+            <a href="{{ route('user.orders.history', ['status' => 'completed']) }}" 
+               class="pb-4 text-sm font-bold transition-all relative {{ ($filters['status'] ?? '') === 'completed' ? 'text-[#006b9b]' : 'text-[#40484f] hover:text-[#006b9b]' }}">
+                Selesai
+                @if(($filters['status'] ?? '') === 'completed')
+                    <div class="absolute bottom-0 left-0 w-full h-0.5 bg-[#006b9b]"></div>
+                @endif
+            </a>
+        </div>
     </div>
 
     <!-- Orders List -->
-    @if($orders->count())
-        <div class="space-y-4">
-            @forelse($orders as $order)
-                <div class="rounded-lg border border-slate-100 bg-white p-5 shadow-sm hover:shadow-md transition">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-start">
-                        <!-- Service Info -->
-                        <div>
-                            <p class="text-xs text-slate-500 uppercase font-bold tracking-wide mb-1">Layanan</p>
-                            <p class="font-bold text-slate-900">{{ $order->service->nama_layanan }}</p>
-                            <p class="text-sm text-slate-500 mt-1">{{ $order->service->kategori }}</p>
-                            <p class="text-xs text-slate-500 mt-2">Penyedia: <span class="font-semibold text-slate-900">{{ $order->service->user->nama }}</span></p>
+    <div class="space-y-4">
+        @forelse($orders as $order)
+            <article class="rounded-2xl border border-[#bfc7d0]/20 bg-white p-6 shadow-sm transition-all hover:border-[#006b9b]/30 hover:shadow-md">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                    <!-- Left: Service Info -->
+                    <div class="flex gap-5 items-start">
+                        <div class="w-16 h-16 rounded-xl bg-[#f4faff] flex items-center justify-center flex-shrink-0">
+                            <svg class="w-8 h-8 text-[#006b9b]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
                         </div>
-
-                        <!-- Price -->
                         <div>
-                            <p class="text-xs text-slate-500 uppercase font-bold tracking-wide mb-1">Harga</p>
-                            <p class="text-xl font-bold text-[#0073a5]">Rp {{ number_format($order->total_harga, 0) }}</p>
-                        </div>
-
-                        <!-- Status -->
-                        <div>
-                            <p class="text-xs text-slate-500 uppercase font-bold tracking-wide mb-1">Status</p>
-                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide
-                                @if($order->status === 'completed') bg-green-100 text-green-700
-                                @elseif($order->status === 'pending') bg-yellow-100 text-yellow-700
-                                @elseif($order->status === 'cancelled') bg-red-100 text-red-700
-                                @else bg-slate-100 text-slate-700
-                                @endif
-                            ">
-                                @if($order->status === 'completed') Selesai
-                                @elseif($order->status === 'pending') Tertunda
-                                @elseif($order->status === 'cancelled') Dibatalkan
-                                @else {{ ucfirst($order->status) }}
-                                @endif
-                            </span>
-                        </div>
-
-                        <!-- Actions -->
-                        <div class="flex flex-col gap-2">
-                            <a href="{{ route('user.orders.show', $order->id) }}" 
-                                class="inline-block px-4 py-2 rounded-lg bg-[#0073a5] text-white text-center text-sm font-semibold hover:bg-[#005981] transition">
-                                Lihat Detail
-                            </a>
-                            @if($order->status === 'pending')
-                                <form method="POST" action="{{ route('user.orders.cancel', $order->id) }}" onsubmit="return confirm('Batalkan pesanan ini?')">
-                                    @csrf
-                                    <button type="submit" class="w-full px-4 py-2 rounded-lg border border-red-300 text-red-600 text-center text-sm font-semibold hover:bg-red-50 transition">
-                                        Batalkan
-                                    </button>
-                                </form>
-                            @endif
+                            <div class="flex items-center gap-3 mb-1">
+                                <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-100 text-slate-500">
+                                    {{ $order->service->kategori }}
+                                </span>
+                                <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded
+                                    @if($order->status === 'completed') bg-emerald-50 text-emerald-600
+                                    @elseif(in_array($order->status, ['pending', 'confirmed', 'in_progress'])) bg-amber-50 text-amber-600
+                                    @elseif($order->status === 'cancelled') bg-red-50 text-red-600
+                                    @else bg-slate-50 text-slate-600
+                                    @endif
+                                ">
+                                    @if($order->status === 'pending') Menunggu Konfirmasi
+                                    @elseif($order->status === 'confirmed') Diterima
+                                    @elseif($order->status === 'in_progress') Sedang Dikerjakan
+                                    @elseif($order->status === 'completed') Selesai
+                                    @elseif($order->status === 'cancelled') Dibatalkan
+                                    @else {{ ucfirst($order->status) }}
+                                    @endif
+                                </span>
+                            </div>
+                            <h3 class="text-xl font-bold text-[#141d21]">{{ $order->service->nama_layanan }}</h3>
+                            <p class="text-sm text-[#40484f] mt-1">
+                                Kode: <span class="font-semibold">{{ $order->order_code }}</span> • 
+                                Mitra: <span class="font-semibold">{{ $order->service->user->nama }}</span>
+                            </p>
                         </div>
                     </div>
-                </div>
-            @empty
-                <div class="rounded-lg border border-dashed border-slate-200 bg-slate-50 p-12 text-center">
-                    <svg class="h-16 w-16 mx-auto text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
-                    </svg>
-                    <p class="text-slate-600 font-semibold">Belum ada pesanan</p>
-                    <p class="text-slate-500 text-sm mt-1">Mulai dengan menjelajahi layanan kami</p>
-                    <a href="{{ route('user.services.index') }}" class="inline-block mt-4 px-6 py-2 rounded-lg bg-[#0073a5] text-white text-sm font-semibold hover:bg-[#005981] transition">
-                        Cari Layanan
-                    </a>
-                </div>
-            @endforelse
-        </div>
 
-        <!-- Pagination -->
-        @if($orders->hasPages())
-            <div class="mt-8 flex justify-center gap-2">
-                {{ $orders->links() }}
+                    <!-- Middle: Price & Date -->
+                    <div class="flex lg:flex-col lg:items-end justify-between lg:justify-center border-t lg:border-t-0 pt-4 lg:pt-0 border-[#bfc7d0]/20">
+                        <p class="text-xl font-black text-[#006b9b]">Rp {{ number_format($order->total_harga, 0) }}</p>
+                        <p class="text-xs text-[#40484f] mt-1">{{ $order->created_at->format('d M Y, H:i') }}</p>
+                    </div>
+
+                    <!-- Right: Actions -->
+                    <div class="flex gap-3">
+                        <a href="{{ route('user.orders.show', $order->id) }}" 
+                           class="flex-1 lg:flex-none px-6 py-2.5 rounded-xl border border-[#006b9b] text-[#006b9b] text-sm font-bold hover:bg-[#006b9b]/5 transition-colors text-center">
+                            Detail
+                        </a>
+                        @if($order->status === 'pending')
+                            <form method="POST" action="{{ route('user.orders.cancel', $order->id) }}" onsubmit="return confirm('Batalkan pesanan ini?')">
+                                @csrf
+                                <button type="submit" class="w-full px-6 py-2.5 rounded-xl bg-red-50 text-red-600 text-sm font-bold hover:bg-red-100 transition-colors">
+                                    Batal
+                                </button>
+                            </form>
+                        @endif
+                    </div>
+                </div>
+            </article>
+        @empty
+            <div class="rounded-3xl border border-dashed border-[#bfc7d0]/40 bg-[#f4faff] p-16 text-center">
+                <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
+                    <svg class="w-10 h-10 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-[#141d21]">Belum ada pesanan</h3>
+                <p class="text-[#40484f] mt-2 max-w-xs mx-auto text-sm">Anda belum memiliki riwayat pesanan dengan status ini. Mulai cari layanan sekarang!</p>
+                <a href="{{ route('user.dashboard') }}" class="inline-block mt-8 px-8 py-3 rounded-xl bg-[#006b9b] text-white font-bold hover:bg-[#00557b] transition-colors shadow-lg shadow-[#006b9b]/20">
+                    Cari Layanan
+                </a>
             </div>
-        @endif
-    @else
-        <div class="rounded-lg border border-dashed border-slate-200 bg-slate-50 p-12 text-center">
-            <svg class="h-16 w-16 mx-auto text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
-            </svg>
-            <p class="text-slate-600 font-semibold">Belum ada pesanan</p>
-            <p class="text-slate-500 text-sm mt-1">Mulai dengan menjelajahi layanan kami</p>
-            <a href="{{ route('user.services.index') }}" class="inline-block mt-4 px-6 py-2 rounded-lg bg-[#0073a5] text-white text-sm font-semibold hover:bg-[#005981] transition">
-                Cari Layanan
-            </a>
+        @endforelse
+    </div>
+
+    <!-- Pagination -->
+    @if($orders->hasPages())
+        <div class="mt-8">
+            {{ $orders->links() }}
         </div>
     @endif
 </x-layout.user-sidebar>

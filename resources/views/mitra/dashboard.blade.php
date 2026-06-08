@@ -1,223 +1,120 @@
 @extends('layouts.mitra')
 
 @section('content')
-@php
-$statusClass = [
-    'pending' => 'bg-amber-100 text-amber-700',
-    'confirmed' => 'bg-blue-100 text-blue-700',
-    'in_progress' => 'bg-sky-100 text-sky-700',
-    'completed' => 'bg-emerald-100 text-emerald-700',
-    'cancelled' => 'bg-rose-100 text-rose-700',
-];
-$statusText = [
-    'pending' => 'Pending',
-    'confirmed' => 'Confirmed',
-    'in_progress' => 'Dikerjakan',
-    'completed' => 'Selesai',
-    'cancelled' => 'Dibatalkan',
-];
-@endphp
-
-<section class="space-y-6 sm:space-y-8">
-    @if (!empty($message))
-        <p role="alert" class="rounded-xl border px-4 py-3 text-sm {{ $message['type'] === 'success' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-rose-200 bg-rose-50 text-rose-700' }}">
-            {{ $message['text'] }}
-        </p>
-    @endif
-
-    <header class="rounded-[28px] bg-white/85 p-6 shadow-[0_10px_30px_rgba(1,51,109,0.12)] backdrop-blur sm:p-8">
-        <p class="text-sm font-semibold uppercase tracking-[0.18em] text-[#006b9b]/70">Dashboard Mitra</p>
-        <h1 class="mt-2 text-3xl font-semibold text-black sm:text-4xl">Selamat Datang</h1>
-        <p class="mt-2 max-w-2xl text-slate-600">Semua ringkasan utama ada di sini. Tampilan dibuat lebih lapang agar mirip mood Figma dan tetap nyaman di mobile.</p>
+<section class="max-w-7xl mx-auto space-y-12 py-6">
+    <!-- Header Section -->
+    <header class="text-center space-y-4">
+        <h1 class="text-4xl font-black text-slate-900 tracking-tight">Halo, Mitra Kosera!</h1>
+        <p class="text-lg text-slate-500 font-medium max-w-2xl mx-auto">Selamat datang kembali. Pantau ringkasan performa layanan dan pendapatan Anda secara real-time di sini.</p>
+        <div class="flex justify-center pt-2">
+            <span class="inline-flex items-center gap-2 text-sm font-bold text-[#006b9b] bg-white px-6 py-2.5 rounded-2xl shadow-sm border border-slate-100">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                {{ now()->translatedFormat('l, d F Y') }}
+            </span>
+        </div>
     </header>
 
-    <div class="grid gap-5 md:grid-cols-2">
-        <article class="min-h-[210px] rounded-[30px] bg-white p-6 shadow-[0_12px_34px_rgba(0,0,0,0.12)] sm:p-8">
-            <p class="text-base font-semibold uppercase tracking-wide text-[#006b9b]">Pesanan Bulan Ini</p>
-            <p class="mt-8 text-5xl font-bold text-slate-900">{{ $stats['monthly_orders'] ?? 0 }}</p>
-            <a href="{{ route('mitra.orders.incoming') }}" class="mt-6 inline-block text-sm font-semibold text-[#006b9b]">Lihat Orderan Masuk</a>
-        </article>
+    <!-- Stat Cards Grid -->
+    <div class="grid gap-8 md:grid-cols-2">
+        <!-- Monthly Orders Card -->
+        <div class="group relative overflow-hidden rounded-[40px] bg-white p-10 shadow-sm border border-slate-100 transition-all hover:shadow-xl hover:-translate-y-1">
+            <div class="relative z-10">
+                <div class="flex items-center justify-between mb-8">
+                    <div class="h-16 w-16 rounded-[24px] bg-blue-50 flex items-center justify-center text-blue-600 transition-transform group-hover:scale-110">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path></svg>
+                    </div>
+                    <span class="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Statistik Utama</span>
+                </div>
+                <h3 class="text-lg font-bold text-slate-500 mb-1">Pesanan Baru</h3>
+                <p class="text-6xl font-black text-slate-900 tracking-tighter">{{ $stats['monthly_orders'] ?? 0 }}</p>
+                <div class="mt-6 flex items-center gap-2">
+                    <span class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-bold text-blue-700">Terverifikasi</span>
+                    <span class="text-xs font-bold text-slate-400">Total pesanan bulan ini</span>
+                </div>
+            </div>
+            <!-- Background Decoration -->
+            <div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-blue-50/50 blur-3xl transition-opacity group-hover:opacity-100 opacity-0"></div>
+        </div>
 
-        <article class="min-h-[210px] rounded-[30px] bg-gradient-to-br from-[#006b9b] via-[#0d7cae] to-[#31a6d8] p-6 text-white shadow-[0_16px_40px_rgba(0,65,110,0.35)] sm:p-8">
-            <p class="text-base font-semibold uppercase tracking-wide text-white/90">Total Pendapatan</p>
-            <p class="mt-8 text-4xl font-bold sm:text-5xl">{{ \App\Helpers\FormatHelper::rupiah($stats['total_income'] ?? 0) }}</p>
-            <p class="mt-4 text-sm text-white/80">Akumulasi pendapatan layanan aktif.</p>
-        </article>
+        <!-- Total Revenue Card -> Link to Earnings -->
+        <a href="{{ route('mitra.earnings') }}" class="group relative overflow-hidden rounded-[40px] bg-[#006b9b] p-10 shadow-2xl shadow-[#006b9b]/30 transition-all hover:scale-[1.02] active:scale-95">
+            <div class="relative z-10">
+                <div class="flex items-center justify-between mb-8">
+                    <div class="h-16 w-16 rounded-[24px] bg-white/20 flex items-center justify-center text-white transition-transform group-hover:scale-110">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 1.343-3 3v4m6 0v-4c0-1.657-1.343-3-3-3zM12 2a10 10 0 100 20 10 10 0 000-20z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path></svg>
+                    </div>
+                    <svg class="w-6 h-6 text-white/50 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path></svg>
+                </div>
+                <h3 class="text-lg font-bold text-white/80 mb-1">Total Pendapatan</h3>
+                <p class="text-5xl font-black text-white tracking-tighter">{{ \App\Helpers\FormatHelper::rupiah($stats['total_income'] ?? 0) }}</p>
+                <p class="mt-6 text-sm font-bold text-white/60">Klik untuk melihat detail grafik & statistik</p>
+            </div>
+            <!-- Background Decoration -->
+            <div class="absolute -right-12 -bottom-12 h-64 w-64 rounded-full bg-white/10 blur-3xl"></div>
+        </a>
 
-        <article class="min-h-[210px] rounded-[30px] bg-gradient-to-br from-[#006b9b] via-[#0d7cae] to-[#31a6d8] p-6 text-white shadow-[0_16px_40px_rgba(0,65,110,0.35)] sm:p-8">
-            <p class="text-base font-semibold uppercase tracking-wide text-white/90">Layanan Aktif</p>
-            <p class="mt-8 text-5xl font-bold text-white">{{ $stats['services_count'] ?? 0 }}</p>
-            <a href="{{ route('mitra.portfolio.index') }}" class="mt-6 inline-block text-sm font-semibold text-white/80">Kelola Layanan</a>
-        </article>
+        <!-- Active Services Card -> Link to Services -->
+        <a href="{{ route('mitra.layanan.index') }}" class="group relative overflow-hidden rounded-[40px] bg-white p-10 shadow-sm border border-slate-100 transition-all hover:shadow-xl hover:-translate-y-1">
+            <div class="relative z-10">
+                <div class="flex items-center justify-between mb-8">
+                    <div class="h-16 w-16 rounded-[24px] bg-emerald-50 flex items-center justify-center text-emerald-600 transition-transform group-hover:scale-110">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path></svg>
+                    </div>
+                    <span class="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Manajemen</span>
+                </div>
+                <h3 class="text-lg font-bold text-slate-500 mb-1">Layanan Aktif</h3>
+                <p class="text-6xl font-black text-slate-900 tracking-tighter">{{ $stats['services_count'] ?? 0 }}</p>
+                <p class="mt-6 text-sm font-bold text-emerald-600 group-hover:underline flex items-center gap-2">
+                    Kelola Semua Layanan <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path></svg>
+                </p>
+            </div>
+            <!-- Background Decoration -->
+            <div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-emerald-50/50 blur-3xl transition-opacity group-hover:opacity-100 opacity-0"></div>
+        </a>
 
-        <article class="min-h-[210px] rounded-[30px] bg-white p-6 shadow-[0_12px_34px_rgba(0,0,0,0.12)] sm:p-8">
-            <p class="text-base font-semibold uppercase tracking-wide text-[#006b9b]">Reputasi &amp; Poin</p>
-            <p class="mt-8 text-5xl font-bold text-slate-900">{{ $stats['points'] ?? 0 }}</p>
-            <div class="mt-4 inline-flex items-center gap-1 text-[#f0bf2f]"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
-            <p class="mt-2 text-sm text-slate-500">Performa layanan Anda konsisten baik.</p>
-        </article>
+        <!-- Reputation Card -->
+        <div class="group relative overflow-hidden rounded-[40px] bg-white p-10 shadow-sm border border-slate-100 transition-all hover:shadow-xl hover:-translate-y-1">
+            <div class="relative z-10">
+                <div class="flex items-center justify-between mb-8">
+                    <div class="h-16 w-16 rounded-[24px] bg-amber-50 flex items-center justify-center text-amber-600 transition-transform group-hover:scale-110">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.382-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path></svg>
+                    </div>
+                    <div class="flex text-amber-400 text-sm">★★★★★</div>
+                </div>
+                <h3 class="text-lg font-bold text-slate-500 mb-1">Poin Reputasi</h3>
+                <p class="text-6xl font-black text-slate-900 tracking-tighter">{{ $stats['points'] ?? 0 }}</p>
+                <div class="mt-6">
+                    <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                        <div class="bg-amber-400 h-full rounded-full" style="width: 85%"></div>
+                    </div>
+                    <p class="mt-3 text-xs font-bold text-slate-400">Terus pertahankan kualitas layanan Anda!</p>
+                </div>
+            </div>
+            <!-- Background Decoration -->
+            <div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-amber-50/50 blur-3xl transition-opacity group-hover:opacity-100 opacity-0"></div>
+        </div>
     </div>
 
-    <!-- Revenue Chart Section -->
-    <section class="rounded-3xl bg-white p-6 shadow-sm">
-        <header class="mb-4">
-            <h2 class="text-xl font-bold text-slate-900">Grafik Pendapatan</h2>
-            <p class="text-sm text-slate-500">Ringkasan pendapatan bulanan Anda.</p>
-        </header>
-        <div class="relative w-full h-[300px]">
-            <canvas id="revenueChart"></canvas>
-        </div>
-    </section>
-
-    <div class="grid gap-6 xl:grid-cols-2">
-        <section class="rounded-3xl bg-white p-6 shadow-sm">
-            <header class="mb-4 flex items-center justify-between gap-3">
-                <div>
-                    <h2 class="text-xl font-bold text-slate-900">Pesanan Terbaru</h2>
-                    <p class="text-sm text-slate-500">5 transaksi terakhir yang masuk ke akun Anda.</p>
+    <!-- Quick Info Banner -->
+    <!-- <div class="rounded-[40px] bg-gradient-to-br from-slate-800 to-slate-900 p-12 text-white relative overflow-hidden shadow-2xl">
+        <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div class="space-y-4">
+                <h2 class="text-3xl font-black">Butuh Bantuan?</h2>
+                <p class="text-slate-400 font-medium text-lg">Hubungi tim support Kosera jika Anda menemui kendala dalam mengelola pesanan.</p>
+                <div class="flex gap-4 pt-2">
+                    <button class="rounded-2xl bg-[#006b9b] px-8 py-3 font-bold hover:bg-[#00557b] transition-colors shadow-lg shadow-[#006b9b]/20">Hubungi Support</button>
+                    <button class="rounded-2xl bg-white/10 px-8 py-3 font-bold hover:bg-white/20 transition-colors backdrop-blur-sm">Pusat Bantuan</button>
                 </div>
-                <a href="{{ route('mitra.orders.history') }}" class="text-sm font-semibold text-[#006b9b]">Semua Pesanan</a>
-            </header>
-            <div class="overflow-x-auto">
-                <table class="min-w-full text-sm">
-                    <thead>
-                        <tr class="border-b text-left text-xs uppercase tracking-wide text-slate-500">
-                            <th class="py-2 pr-3">Kode</th><th class="py-2 pr-3">Pelanggan</th><th class="py-2 pr-3">Layanan</th><th class="py-2 pr-3">Total</th><th class="py-2">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (count($recentOrders ?? []) === 0)
-                            <tr><td colspan="5" class="py-4 text-center text-slate-400">Belum ada pesanan</td></tr>
-                        @else
-                            @foreach ($recentOrders as $order)
-                                <tr class="border-b last:border-0">
-                                    <td class="py-3 pr-3 font-mono text-xs font-semibold text-[#006b9b]">{{ $order['order_code'] }}</td>
-                                    <td class="py-3 pr-3">{{ $order['customer_name'] }}</td>
-                                    <td class="py-3 pr-3">{{ $order['service_name'] }}</td>
-                                    <td class="py-3 pr-3 font-semibold">{{ \App\Helpers\FormatHelper::rupiah($order['total_price']) }}</td>
-                                    <td class="py-3"><span class="rounded-full px-2.5 py-1 text-xs font-semibold {{ $statusClass[$order['status']] ?? 'bg-slate-100 text-slate-600' }}">{{ $statusText[$order['status']] ?? ucfirst($order['status']) }}</span></td>
-                                </tr>
-                            @endforeach
-                        @endif
-                    </tbody>
-                </table>
             </div>
-        </section>
-
-        <section class="rounded-3xl bg-white p-6 shadow-sm">
-            <header class="mb-4 flex items-center justify-between gap-3">
-                <div>
-                    <h2 class="text-xl font-bold text-slate-900">Sertifikat Terbaru</h2>
-                    <p class="text-sm text-slate-500">Empat sertifikat terakhir yang tersimpan.</p>
+            <div class="hidden lg:block">
+                <div class="w-48 h-48 bg-white/5 rounded-full border border-white/10 flex items-center justify-center backdrop-blur-xl rotate-12">
+                    <svg class="w-24 h-24 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg>
                 </div>
-                <a href="{{ route('mitra.certificates.index') }}" class="text-sm font-semibold text-[#006b9b]">Semua Sertifikat</a>
-            </header>
-            <div class="space-y-3">
-                @if (count($recentCertificates ?? []) === 0)
-                    <p class="text-center text-slate-400">Belum ada sertifikat</p>
-                @else
-                    @foreach ($recentCertificates as $cert)
-                        <article class="rounded-xl border border-slate-200 p-3">
-                            <div class="flex items-start justify-between gap-2">
-                                <strong class="text-slate-900">{{ $cert['name'] }}</strong>
-                                <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">{{ ucfirst($cert['status'] ?? 'pending') }}</span>
-                            </div>
-                            <p class="mt-1 text-sm text-slate-600">{{ $cert['issued_by'] ?? '' }} · {{ $cert['category'] ?? '' }}</p>
-                        </article>
-                    @endforeach
-                @endif
             </div>
-        </section>
-    </div>
-
-    <section class="rounded-3xl bg-white p-6 shadow-sm">
-        <header class="mb-4 flex items-center justify-between gap-3">
-            <div>
-                <h2 class="text-xl font-bold text-slate-900">Portfolio Terbaru</h2>
-                <p class="text-sm text-slate-500">Project yang baru Anda unggah.</p>
-            </div>
-            <a href="{{ route('mitra.portfolio.index') }}" class="text-sm font-semibold text-[#006b9b]">Semua Portfolio</a>
-        </header>
-        <div class="grid gap-3 md:grid-cols-2">
-            @if (count($recentPortfolio ?? []) === 0)
-                <p class="col-span-full text-center text-slate-400">Belum ada portfolio</p>
-            @else
-                @foreach ($recentPortfolio as $item)
-                    <article class="rounded-xl border border-slate-200 p-3">
-                        <div class="flex items-start justify-between gap-2">
-                            <strong class="text-slate-900">{{ $item['title'] }}</strong>
-                            <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">{{ ucfirst($item['status'] ?? 'draft') }}</span>
-                        </div>
-                        <p class="mt-1 text-sm text-slate-600">
-                            {{ $item['category'] ?? 'Tanpa kategori' }}
-                            @if (!empty($item['rating'])) · Rating {{ $item['rating'] }}/5 @endif
-                        </p>
-                    </article>
-                @endforeach
-            @endif
         </div>
-    </section>
+        <!-- Background Decorations -->
+        <div class="absolute -right-24 -bottom-24 h-96 w-96 rounded-full bg-[#006b9b]/10 blur-3xl"></div>
+        <div class="absolute -left-24 -top-24 h-96 w-96 rounded-full bg-white/5 blur-3xl"></div>
+    </div> -->
 </section>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const chartElement = document.getElementById('revenueChart');
-
-        if (!chartElement || typeof Chart === 'undefined') {
-            return;
-        }
-
-        const chartData = @json($chartData ?? ['labels' => [], 'data' => []]);
-        const ctx = chartElement.getContext('2d');
-
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: chartData.labels ?? [],
-                datasets: [{
-                    label: 'Pendapatan (Rp)',
-                    data: chartData.data ?? [],
-                    borderColor: '#006b9b',
-                    backgroundColor: 'rgba(0, 107, 155, 0.1)',
-                    fill: true,
-                    tension: 0.4,
-                    borderWidth: 3,
-                    pointRadius: 5,
-                    pointBackgroundColor: '#fff',
-                    pointBorderColor: '#006b9b',
-                    pointBorderWidth: 2,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false,
-                    },
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            // UBAH BAGIAN INI
-                            callback: function(value) {
-                                return new Intl.NumberFormat('id-ID', { 
-                                    style: 'currency', 
-                                    currency: 'IDR',
-                                    minimumFractionDigits: 0
-                                }).format(value);
-                            }
-                        },
-                    },
-                    x: {
-                        grid: {
-                            display: false,
-                        },
-                    },
-                },
-            },
-        });
-    });
-</script>
 @endsection

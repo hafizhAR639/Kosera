@@ -27,11 +27,6 @@
                 <span>Dashboard</span>
             </a>
 
-            <a href="{{ route('mitra.layanan.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition-colors {{ request()->routeIs('mitra.layanan.*') ? 'bg-[#006b9b] text-white' : 'text-[#006b9b] hover:bg-gray-50' }}">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 1.343-3 3v6h6v-6c0-1.657-1.343-3-3-3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M5 10h14M7 10V8a5 5 0 0110 0v2M4 20h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
-                <span>Layanan</span>
-            </a>
-
             <a href="{{ route('mitra.orders.incoming') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition-colors {{ request()->routeIs('mitra.orders.incoming*') ? 'bg-[#006b9b] text-white' : 'text-[#006b9b] hover:bg-gray-50' }}">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
                 <span>Orderan Masuk</span>

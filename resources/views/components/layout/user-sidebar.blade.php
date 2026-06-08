@@ -21,7 +21,7 @@
     </style>
 </head>
 <body class="min-h-screen overflow-x-hidden bg-[#f4faff] text-[#141d21]">
-    <div class="flex min-h-screen items-start bg-[#f4faff]">
+    <div class="flex h-screen">
         @include('components.kosera-sidebar', ['mode' => 'user'])
 
         <!-- Main Content -->
